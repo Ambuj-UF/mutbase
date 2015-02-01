@@ -23,9 +23,7 @@
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 trail <- function (x) paste("</", gsub("<", "", x), sep="")
-
 trim_flag <- function (x, flagger) gsub(trail(flagger), "", gsub(flagger, "", x))
-
 
 blast_parser <- function(filename) {
     text <- readLines(filename,encoding="UTF-8")
