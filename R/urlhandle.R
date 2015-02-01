@@ -57,17 +57,17 @@ urlopen <- function(object_list){
 createObject <- function(id, db, strand="None", seq_start="None", seq_stop="None") {
     object_list <- vector(mode="list", length=5)
     names(object_list) <- c("db", "id", "strand", "seq_start", "seq_stop")
-    object_list[["db"]] = db
-    object_list[["id"]] = id
-    object_list[["strand"]] = strand
-    object_list[["seq_start"]] = seq_start
-    object_list[["seq_stop"]] = seq_stop
+    object_list[["db"]] <- db
+    object_list[["id"]] <- id
+    object_list[["strand"]] <- strand
+    object_list[["seq_start"]] <- seq_start
+    object_list[["seq_stop"]] <- seq_stop
     
     return(object_list)
 }
 
 
-# object_list createObject(id, db, strand=1, seq_start=879632, seq_stop=879937)
+# object_list <- createObject(id, db, strand=1, seq_start=879632, seq_stop=879937)
 # result=urlopen(object_list)
 # sink("mydata.fas")
 # cat(result[1:3][1],"\n",result[1:3][2], "\n")
