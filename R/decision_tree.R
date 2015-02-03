@@ -148,6 +148,27 @@ buildTree <- function(dataset, labels) {
 }
 
 
+classify <- function(tree, labels, testvec) {
+    firstStr = names(tree)[1]
+    secondDict = tree[[firstStr]]
+    featIndex = which(labels %in% c(firstStr))
+    for (key in names(secondDict)) {
+        if (testvec[[featIndex]] == key) {
+            if ( exists("names(secondDict)") == TRUE ) {
+                classLabel = classify(secondDict[[key]],labels,testvec)
+            }
+            else {
+                classLabel = secondDict[[key]]
+            }
+        }
+    }
+    
+    tryCatch( { return(classLabel)
+    }, error = function(e) {
+        return(1)
+    } )
+}
+
 
 
 
