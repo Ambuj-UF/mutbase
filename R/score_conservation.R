@@ -101,7 +101,7 @@ shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=
     h = 0.
     for (i in 1:length(fc)) {
         if fc[[i]] != 0 {
-            h = h + fc[i] * log(fc[[i]])
+            h = h + fc[[i]] * log(fc[[i]])
         }
     }
     
@@ -648,9 +648,16 @@ get_distribution_from_file <- function(fname) {
 }
 
 
-
-
-
+replace_element <- function(stringElement, Obj1, Obj2) {
+    new_vec = strsplit(stringElement, "")
+    for (i in 1:length(new_vec[[1]])) {
+        if (new_vec[[1]][[i]] == Obj1) {
+            new_vec[[1]][i] = Obj2
+        }
+    }
+    
+    retString = paste(new_vec[[1]], collapse = "")
+}
 
 
 
