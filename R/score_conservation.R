@@ -55,7 +55,6 @@ weighted_gap_penalty=function(col, seq_weights){
 gap_percentage=function(col){
   """Return the percentage of gaps in col."""
    num_gaps = 0
-
    for (aa in col){
      if (aa == '-'){ num_gaps += 1}}
 
