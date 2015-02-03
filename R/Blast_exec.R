@@ -1,3 +1,7 @@
+###############################################################################
+# Ambuj Kumar, University of Florida
+# Mrinal Mishra, University of Turku, Finland
+###############################################################################
 library(seqinr)
 library(annotate)
 blastSeqKK <- function (x, database = "nr", hitListSize = "100",filter = "L",expect = "100",program = "blastn",attempts = 10) {
