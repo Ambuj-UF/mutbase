@@ -565,9 +565,31 @@ calculate_sequence_weights <- function(msa) {
 }
 
 
+load_sequence_weights <- function(fname) {
+    seq_weights = c()
+    f = readLines(fname, encoding="UTF-8")
+    for (line in f) {
+        l = strsplit(line, " ")
+        if (line[[1]] != '#' and nchar(l) == 2) {
+            seq_weights = c(seq_weights, l[[2]])
+        }
+    }
+    
+    return(seq_weights)
+}
 
 
-
+get_column <- (col_num, alignment) {
+    """Return the col_num column of alignment as a list."""
+    col = c()
+    for (seq in alignment) {
+        if (col_num < nchar(seq)) {
+            col = c(col, seq[[col_num]])
+        }
+    }
+    
+    return(col)
+}
 
 
 
