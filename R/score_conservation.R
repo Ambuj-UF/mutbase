@@ -1,14 +1,36 @@
 
-###############################################################################
-# Ambuj Kumar, University of Florida
-# Mrinal Mishra, University of Turku, Finland
-###############################################################################
+################################################################################################################
+#                                                                                                              #
+# Copyright (C) {2014}  {Ambuj Kumar, Kimball-Brain lab group, Biology Department, University of Florida}      #
+#                       {Mrinal Mishra, University of Turku, Finland}                                          #
+#                                                                                                              #
+# This program is free software: you can redistribute it and/or modify                                         #
+# it under the terms of the GNU General Public License as published by                                         #
+# the Free Software Foundation, either version 3 of the License, or                                            #
+# (at your option) any later version.                                                                          #
+#                                                                                                              #
+# This program is distributed in the hope that it will be useful,                                              #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of                                               #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                #
+# GNU General Public License for more details.                                                                 #
+#                                                                                                              #
+# This program comes with ABSOLUTELY NO WARRANTY;                                                              #
+# This is free software, and you are welcome to redistribute it                                                #
+# under certain conditions;                                                                                    #
+#                                                                                                              #
+################################################################################################################
+
+
 library(hash)
 PSEUDOCOUNT = .0000001
 
 amino_acids = c('A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', '-')
-iupac_alphabet = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "Z", "X", "*", "-") 
+iupac_alphabet = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "Z", "X", "*", "-")
+
 aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
+
+
+
 ################################################################################
 # Frequency count
 ################################################################################
@@ -32,6 +54,8 @@ weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
     freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
   return (freq_counts)
   }
+
+
 ################################################################################
 # Gap Penalty
 ################################################################################
