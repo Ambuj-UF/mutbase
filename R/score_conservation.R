@@ -659,9 +659,14 @@ replace_element <- function(stringElement, Obj1, Obj2) {
     
     return(retString)
 }
+
+
+###########################################################################################
+# Read fasta files
+###########################################################################################
+
 read_fasta_alignment=function(filename){
-  """ Read in the alignment stored in the FASTA file, filename. Return two
-    lists: the identifiers and sequences. """
+  """ Read in the alignment stored in the FASTA file, filename. Return two lists: the identifiers and sequences. """
 
   f = readLines(filename,encoding="UTF-8")
 
@@ -699,6 +704,98 @@ read_fasta_alignment=function(filename){
   cur_seq=replace_element(cur_seq,'X','-')
   alignment.append(cur_seq)
   return (c(names, alignment))
+
+
+
+
+
+################################################################################
+# Begin execution
+################################################################################
+
+
+
+execute_conserve <- function(infile_name,
+                             outfile_name,
+                             window_size=3,
+                             win_lam=0.5,
+                             s_matrix_file="matrix/blosum62.bla",
+                             bg_distribution=blosum_background_distr,
+                             scoring_function=js_divergence,
+                             use_seq_weights=True,
+                             background_name='blosum62',
+                             gap_cutoff=0.3,
+                             use_gap_penalty=1,
+                             seq_specific_output=0,
+                             normalize_scores=False
+                             ) {
+    
+    blosum_background_distr = c(0.078, 0.051, 0.041, 0.052, 0.024, 0.034, 0.059, 0.083, 0.025, 0.062, 0.092, 0.056, 0.024, 0.044, 0.043, 0.059, 0.055, 0.014, 0.034, 0.072)
+    
+    align_file = infile_name
+    align_suffix_elements = strsplit(align_file, "\\.")
+    align_suffix = align_suffix_elements[[length(align_suffix_elements)]]
+    s_matrix = read_scoring_matrix(s_matrix_file)
+    names = c()
+    alignment = c()
+    seq_weights = c()
+    ali_out  = read_fasta_alignment(align_file)
+    names = ali_out[1]; alignment = ali_out[2]
+    
+    seq_len = nchar(alignment[[1]])
+    for (i in length(alignment)) {
+        if (nchar(alignment[[i]]) != seq_len) {
+            sprintf("ERROR: Sequences of different lengths: %s (%d) != %s (%d).\n", names[[1]], seq_len, names[[i]], nchar(seq))
+            quit()
+        }
+    }
+    
+    if (use_seq_weights) {
+        seq_weights = load_sequence_weights(.replace(align_file, align_suffix, '.weights'))
+        if (seq_weights == c()) {
+            seq_weights = calculate_sequence_weights(alignment)
+        }
+    }
+    
+    if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment)) }
+    
+    # handle print of output relative to specific sequence
+    ref_seq_num = "None"
+    if (seq_specific_output & !(seq_specific_output %in% names)) {
+        sprintf("Sequence %s not found in alignment. Using default output format...\n", seq_specific_output)
+        seq_specific_output = 0
+    }
+    else if (seq_specific_output %in% names) {
+        ref_seq_num = which(seq_specific_output %in% names)
+    }
+    
+    # calculate scores
+    scores = c()
+    for (i in 1:nchar(alignment[[1]])) {
+        col = get_column(i, alignment)
+        if (length(col) == length(alignment)) {
+            if (gap_percentage(col) <= gap_cutoff) {
+                scores = c(scores, append(scoring_function(col, s_matrix, bg_distribution, seq_weights, use_gap_penalty)))
+            }
+            else {
+                scores = c(scores, -1000)
+            }
+        }
+    }
+    
+    if (window_size > 0) {
+        scores = window_score(scores, window_size, win_lam)
+    }
+    
+    if (normalize_scores) {
+        scores = calc_z_scores(scores, -999)
+    }
+}
+
+
+
+
+
 
 
 
