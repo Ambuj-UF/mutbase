@@ -5,7 +5,7 @@
 ## Sequences with their respective ID parsed from Blast output and aligned
 library(muscle)
 library(seqinr)
-align_seq<- function(filename) {
+align_seq<- function(filename){
   parsed_data=blast_parser(filename)
   seq=c()
   seqname=c()
