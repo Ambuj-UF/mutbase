@@ -115,7 +115,37 @@ chooseBestFeatureToSplit <- function(dataset) {
 }
 
 
-
+buildTree <- function(dataset, labels) {
+    classlist = c()
+    for (x in dataset) {
+        classlist = c(classlist, dataset[-1])
+    }
+    
+    if (length(classlist[classlist == length(classlist)]) = length(classlist)) {
+        return(classlist[[1]])
+    }
+    if (length(classlist) == 1) {
+        return(majority_count(classlist))
+    }
+    
+    bestFeature = chooseBestFeatureToSplit(dataset)
+    bestFeatureLabel = labels[[bestFeature]]
+    tree = list(bestFeatureLabel=list())
+    labels = labels[-bestFeature]
+    featValues = c()
+    for (x in dataset) {
+        featValues = c(featValues, x[[bestFeature]])
+    }
+    
+    uniqueVals = unique(featValues)
+    for (value in uniqueVals) {
+        subLabels = labels
+        tree[[bestFeatureLabel]][value] = buildTree(splitDataset(dataset, bestFeature, value),subLabels)
+    }
+    
+    return(tree)
+    
+}
 
 
 
