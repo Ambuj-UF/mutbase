@@ -2,6 +2,65 @@
 ###############################################################################
 # Ambuj Kumar, University of Florida
 ###############################################################################
+PSEUDOCOUNT = .0000001
+
+amino_acids = c('A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', '-')
+iupac_alphabet = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "Z", "X", "*", "-") 
+aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
+################################################################################
+# Frequency count
+################################################################################
+weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
+  """ Return the weighted frequency count for a column--with pseudocount."""
+
+# if the weights do not match, use equal weight
+  if (length(seq_weights) != length(col)){
+    seq_weights = rep(as.double(1.0),length(col))}
+
+  aa_num = 0
+  freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
+
+  for (aa in amino_acids){
+    for (j in 1:length(col)){
+        if (col[j] == aa){
+          freq_counts[aa_num] += rep(1,seq_weights[j])}
+        aa_num += 1}}
+
+  for (j in 1:length(freq_counts)){
+    freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
+  return (freq_counts)
+  }
+################################################################################
+# Gap Penalty
+################################################################################
+weighted_gap_penalty=function(col, seq_weights){
+  """ Calculate the simple gap penalty multiplier for the column. If the 
+    sequences are weighted, the gaps, when penalized, are weighted 
+    accordingly. """
+
+  # if the weights do not match, use equal weight
+  if (length(seq_weights) != length(col)){
+     seq_weights = rep(as.double(1.0),length(col))}
+
+  gap_sum = 0
+  for (i in 1:length(col)){
+     if (col[i] == '-'){
+        gap_sum += seq_weights[i]}}
+
+  return (1 - (gap_sum / sum(seq_weights)))
+}
+
+gap_percentage=function(col){
+  """Return the percentage of gaps in col."""
+   num_gaps = 0
+
+   for (aa in col){
+     if (aa == '-'){ num_gaps += 1}}
+
+   return (num_gaps / length(col))
+}
+  
+
 
 
 ################################################################################
