@@ -1,3 +1,7 @@
+###############################################################################
+# Ambuj Kumar, University of Florida
+# Mrinal Mishra, University of Turku Finland
+###############################################################################
 ##Multiple seq aligner for Blast output 
 ## Sequences with their respective ID parsed from Blast output and aligned
 library(muscle)
