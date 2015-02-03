@@ -1,7 +1,6 @@
 
 ###############################################################################
 # Ambuj Kumar, University of Florida
-# Mrinal Mishra, University of Turku Finland
 ###############################################################################
 library(hash)
 PSEUDOCOUNT = .0000001
