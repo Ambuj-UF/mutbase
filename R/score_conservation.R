@@ -485,7 +485,48 @@ read_scoring_matrix <- function(sm_file) {
     first_line = 1
     row = c()
     list_sm = c()
+    
+    tryCatch( {
+        
+        text <- readLines(sm_file,encoding="UTF-8")
+    
+        for (line in matrix_file) {
+            if (line[1] != '#' and first_line) {
+                first_line = 0
+                if (length(amino_acids) == 0) {
+                    for (c in strsplit(line, " ")) {
+                        aa_to_index[tolower(c)] = aa_index
+                        amino_acids = c(amino_acids, tolower(c))
+                        aa_index = aa_index + 1
+                    }
+                }
+            }
+            elif (line[1] != '#' and first_line == 0) {
+                if (nchar(line) > 1) {
+                    row = strsplit(line, " ")
+                    list_sm = c(list_sm, row)
+                }
+            }
+        }, error = function(err) {
+            return(identity(20))
+        }, finally = {
+            sprintf("Could not load similarity matrix: %s. Using identity matrix...", sm_file)
+        }
+    } )
+    
+    # if matrix is stored in lower tri form, copy to upper
+    if (length(list_sm[[1]]) < 20) {
+        for (i in 1:19) {
+            for (j in i+1:20) {
+                list_sm[i] = c(list_sm[i], list_sm[[j]][i])
+            }
+        }
+    }
+    
+    return(list_sm)
 }
+
+
 
 
 
