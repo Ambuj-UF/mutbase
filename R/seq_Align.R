@@ -1,5 +1,4 @@
 ###############################################################################
-# Ambuj Kumar, University of Florida
 # Mrinal Mishra, University of Turku Finland
 ###############################################################################
 ##Multiple seq aligner for Blast output 
