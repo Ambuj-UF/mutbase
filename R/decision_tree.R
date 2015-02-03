@@ -70,6 +70,31 @@ entropy <- function(dataset) {
 }
 
 
+splitDataset <- function(dataset, nclom, value) {
+    retDataSet = c()
+    for (record in dataset) {
+        if (record[[nclom]] == value) {
+            reducedRecord = record[[1:nclom]]
+            reducedRecord = c(reducedRecord, record[[nclom+1: length(record)]])
+            retDataSet = c(retDataSet, reducedRecord)
+        }
+    }
+    
+    return(retDataSet)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
