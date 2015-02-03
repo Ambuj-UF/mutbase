@@ -41,6 +41,7 @@ urlencode <- function(object_list){
 }
 
 
+
 urlopen <- function(object_list){
     cgi <- 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
     variables <- urlencode(object_list)
