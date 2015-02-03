@@ -139,7 +139,7 @@ property_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty
      fc = rep(0, length(property_partition))
      for (p in 1:length(property_partition)) {
          for (aa in property_partition[[p]]) {
-             prop_fc[p] += fc[aa_to_index[aa]]
+             prop_fc[p] = prop_fc[[p]] + fc[[aa_to_index[[aa]]]]
          }
      }
      
