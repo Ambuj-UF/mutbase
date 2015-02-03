@@ -126,7 +126,7 @@ property_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty
     """Calculate the entropy of a column col relative to a partition of the amino acids. Similar to Mirny '99. sim_matrix and bg_distr are ignored, but could be used to define the sets."""
     
     # Mirny and Shakn. '99
-     property_partition = c(c('A','V','L','I','M','C'), c('F','W','Y','H'), c('S','T','N','Q'), c('K','R'), c('D', 'E'), c('G', 'P'), c('-'))
+     property_partition = list(list('A','V','L','I','M','C'), list('F','W','Y','H'), list('S','T','N','Q'), list('K','R'), list('D', 'E'), list('G', 'P'), list('-'))
      
      # Williamson '95
     
@@ -174,7 +174,7 @@ property_relative_entropy <- function(col, sim_matrix, bg_distr, seq_weights, ga
     #property_partition = [['A','V','L','I','M','C'], ['F','W','Y','H'], ['S','T','N','Q'], ['K','R'], ['D', 'E'], ['G', 'P'], ['-']]
     
     # Williamson '95
-    property_partition = c(c('V','L', 'I','M'), c('F','W','Y'), c('S','T'), c('N','Q'), c('H','K','R'), c('D','E'), c('A','G'), c('P'), c('C'))
+    property_partition = list(list('V','L', 'I','M'), list('F','W','Y'), list('S','T'), list('N','Q'), list('H','K','R'), list('D','E'), list('A','G'), list('P'), list('C'))
     
     prop_bg_freq = c()
     
