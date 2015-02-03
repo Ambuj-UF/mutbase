@@ -790,6 +790,8 @@ execute_conserve <- function(infile_name,
     if (normalize_scores) {
         scores = calc_z_scores(scores, -999)
     }
+    
+    return(scores)
 }
 
 
