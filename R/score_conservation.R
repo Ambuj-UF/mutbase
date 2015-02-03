@@ -592,6 +592,38 @@ get_column <- (col_num, alignment) {
 }
 
 
+map_float <- function(vec_Obj) {
+    for (i in 1:length(vec_Obj)) {
+        vec_Obj[i] = as.numeric(vec_Obj[[i]])
+    }
+    
+    return(vec_Obj)
+}
+
+
+get_distribution_from_file <- function(fname) {
+    """ Read an amino acid distribution from a file. The probabilities should be on a single line separated by whitespace in alphabetical order as in amino_acids above. # is the comment character."""
+    
+    distribution = c()
+    f = readLines(fname, encoding="UTF-8")
+    for (line in f) {
+        if (line[[1]] == '#') {
+            line = line[-nchar(line)]
+            distribution = strsplit(line)
+            distribution = map_float(distribution)
+        }
+    }
+    
+    if (.997 > sum(distribution) or sum(distribution) > 1.003) {
+        sprintf("Distribution does not sum to 1. Using default (BLOSUM62) background.")
+        sprintf(sum(distribution))
+        return(c())
+    }
+    
+    return(distribution)
+}
+
+
 
 
 
