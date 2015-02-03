@@ -85,7 +85,34 @@ splitDataset <- function(dataset, nclom, value) {
 
 
 
-
+chooseBestFeatureToSplit <- function(dataset) {
+    numberFeature = length(dataset[1]) - 1
+    baseEntropy = entropy(dataset)
+    bestInfGain = 0
+    bestFeature = -1
+    for (i in range(numberFeature)) {
+        featureVector = c()
+        for (x in dataset) {
+            featureVector = c(featureVector, x[[i]])
+        }
+        
+        uniqueValues = unique(featureVector)
+        newEntropy = 0
+        for (value in uniqueValues) {
+            subDataset = splitDataset(dataset, i, value)
+            prob = length(subDataset)/length(dataset)
+            newEntropy = newEntropy + prob*entropy(subDataset)
+        }
+        
+        infoGain = baseEntropy - newEntropy
+        if (infoGain > bestInfGain) {
+            bestInfGain = infoGain
+            bestFeature = i
+        }
+    }
+    
+    return(bestFeature)
+}
 
 
 
