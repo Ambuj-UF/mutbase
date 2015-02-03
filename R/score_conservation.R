@@ -19,7 +19,7 @@ weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
   if (length(seq_weights) != length(col)){
     seq_weights = rep(as.double(1.0),length(col))}
 
-  aa_num = 0
+  aa_num = 1
   freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
 
   for (aa in amino_acids){
