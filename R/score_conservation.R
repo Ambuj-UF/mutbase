@@ -660,7 +660,46 @@ replace_element <- function(stringElement, Obj1, Obj2) {
     
     return(retString)
 }
+read_fasta_alignment=function(filename){
+  """ Read in the alignment stored in the FASTA file, filename. Return two
+    lists: the identifiers and sequences. """
 
+  f = readLines(filename,encoding="UTF-8")
+
+  names = c()
+  alignment = c()
+  cur_seq = ''
+
+  for (line in f){
+    line = line[:-nchar(line)]}
+  if (length(line) == 0){ next }
+  if (line[1] == ';'){next} 
+  if (line[1] == '>'){
+    names.append(replace_element(line[2:].'\r', ''))}
+
+  if (cur_seq != ''){
+    cur_seq = toupper(cur_seq)
+    for (i in 1:length(cur_seq)) {
+      if (cur_seq[i] not in iupac_alphabet){
+        cur_seq = replace_element(cur_seq,cur_seq[i], '-')}}}
+  cur_seq=replace_element(cur_seq,'B','D')
+  cur_seq=replace_element(cur_seq,'Z','Q')
+  cur_seq=replace_element(cur_seq,'X','-')
+  alignment.append(cur_seq)
+  cur_seq = ''
+  else if (line[1] in iupac_alphabet){
+    cur_seq = cur_seq + replace_element(line,'\r', '')}
+
+  # add the last sequence
+  cur_seq = toupper(cur_seq)
+  for (i in 1:length(cur_seq)) {
+    if (cur_seq[i] not in iupac_alphabet){
+      cur_seq = replace_element(cur_seq,cur_seq[i], '-')}}
+  cur_seq=replace_element(cur_seq,'B','D')
+  cur_seq=replace_element(cur_seq,'Z','Q')
+  cur_seq=replace_element(cur_seq,'X','-')
+  alignment.append(cur_seq)
+  return (c(names, alignment))
 
 
 
