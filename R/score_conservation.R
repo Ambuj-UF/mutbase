@@ -528,11 +528,41 @@ read_scoring_matrix <- function(sm_file) {
 
 
 
-
-
-
-
-
+calculate_sequence_weights <- function(msa) {
+    """ Calculate the sequence weights using the Henikoff '94 method for the given msa. """
+    
+    seq_weights = rep(0, length(msa))
+    
+    for (i in 1:length(msa[[1]])) {
+        freq_counts = rep(0, length(amino_acids))
+        col = c()
+        for (j in 1:length(msa)) {
+            if (msa[[j]][i] != '-') {
+                freq_counts[[aa_to_index[[msa[[j]][i]]]]] = freq_counts[[aa_to_index[[msa[[j]][i]]]]] + 1
+            }
+        }
+        
+        num_observed_types = 0
+        for (j in 1:length(freq_counts)) {
+            if (freq_counts[[j]] > 0) {
+                num_observed_types = num_observed_types + 1
+            }
+        }
+        
+        for (j in 1:length(msa)) {
+            d = freq_counts[[aa_to_index[[msa[[j]][i]]]]] * num_observed_types
+            if d > 0 {
+                seq_weights[j] = seq_weights[[j]] + 1/d
+            }
+        }
+    }
+    
+    for w in range(len(seq_weights)) {
+        seq_weights[w] = seq_weights[[w]] / length(msa[[1]])
+    }
+    
+    return(seq_weights)
+}
 
 
 
