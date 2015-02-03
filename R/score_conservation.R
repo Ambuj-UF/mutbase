@@ -657,6 +657,8 @@ replace_element <- function(stringElement, Obj1, Obj2) {
     }
     
     retString = paste(new_vec[[1]], collapse = "")
+    
+    return(retString)
 }
 
 
