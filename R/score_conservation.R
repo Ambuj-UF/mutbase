@@ -21,6 +21,14 @@
 ################################################################################################################
 
 
+# Based on
+#
+# Capra JA and Singh M. Predicting functionally important residues from sequence conservation. Bioinformatics, 23(15):1875-82, 2007.
+#
+# Scoring protein sequence conservation using the Jensen-Shannon divergence.
+#
+
+
 library(hash)
 PSEUDOCOUNT = .0000001
 amino_acids = c('A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', '-')
