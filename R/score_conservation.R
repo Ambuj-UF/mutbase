@@ -610,7 +610,7 @@ load_sequence_weights <- function(fname) {
 }
 
 
-get_column <- (col_num, alignment) {
+get_column <- function(col_num, alignment) {
     """Return the col_num column of alignment as a list."""
     col = c()
     for (seq in alignment) {
