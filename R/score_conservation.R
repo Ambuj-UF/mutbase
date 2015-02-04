@@ -21,9 +21,9 @@
 ################################################################################################################
 
 
-# Based on
-#
-# Capra JA and Singh M. Predicting functionally important residues from sequence conservation. Bioinformatics, 23(15):1875-82, 2007.
+# Based on:
+# Capra JA and Singh M. Predicting functionally important residues from sequence conservation.
+# Bioinformatics, 23(15):1875-82, 2007.
 #
 # Scoring protein sequence conservation using the Jensen-Shannon divergence.
 #
