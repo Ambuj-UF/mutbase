@@ -776,7 +776,7 @@ read_fasta_alignment <- function(filename){
   cur_seq = replace_element(cur_seq,'X','-')
   
   alignment = c(alignment, cur_seq)
-  return (list(list(names), list(alignment)))
+  return (list(names,alignment))
   
 }
 
