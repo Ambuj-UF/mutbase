@@ -447,7 +447,7 @@ window_score <- function(scores, window_len, lam=.5) {
         sum = 0
         num_terms = 0
         for (j in (i - window_len): (i + window_len + 1)) {
-            if (i != j and scores[[j]] >= 0) {
+            if (i != j & scores[[j]] >= 0) {
                 num_terms = num_terms + 1
                 sum = sum + scores[j]
             }
