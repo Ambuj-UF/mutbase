@@ -43,25 +43,25 @@ aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
 # Frequency count
 ################################################################################
 weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
-  """ Return the weighted frequency count for a column--with pseudocount."""
-
-# if the weights do not match, use equal weight
-  if (length(seq_weights) != length(col)){
-    seq_weights = rep(as.double(1.0),length(col))}
-
-  aa_num = 1
-  freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
-
-  for (aa in amino_acids){
-    for (j in 1:length(col)){
-        if (col[j] == aa){
-          freq_counts[aa_num] += rep(1,seq_weights[j])}
-        aa_num += 1}}
-
-  for (j in 1:length(freq_counts)){
-    freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
-  return (freq_counts)
-  }
+    #""" Return the weighted frequency count for a column--with pseudocount."""
+        
+        # if the weights do not match, use equal weight
+        if (length(seq_weights) != length(col)){
+seq_weights = rep(as.double(1.0),length(col))}
+    
+    aa_num = 1
+        freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
+            
+            for (aa in amino_acids){
+for (j in 1:length(col)){
+    if (col[j] == aa){
+        freq_counts[aa_num] = freq_counts[aa_num] + rep(1,seq_weights[j])}
+        aa_num = aa_num + 1}}
+            
+            for (j in 1:length(freq_counts)){
+freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
+    return (freq_counts)
+    }
 
 
 ################################################################################
