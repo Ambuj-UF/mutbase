@@ -436,17 +436,17 @@ sum_of_pairs <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) 
 ################################################################################
 
 window_score <- function(scores, window_len, lam=.5) {
-    """ This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
+    #""" This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
     
     w_scores = scores
-    for (i in window_len:length(scores) - window_len) {
+    for (i in window_len:(length(scores) - window_len)) {
         if (scores[[i]] < 0) {
             next
         }
-    
+        
         sum = 0
         num_terms = 0
-        for (j in 1:(i - window_len, i + window_len + 1)) {
+        for (j in (i - window_len): (i + window_len + 1)) {
             if (i != j and scores[[j]] >= 0) {
                 num_terms = num_terms + 1
                 sum = sum + scores[j]
@@ -457,7 +457,7 @@ window_score <- function(scores, window_len, lam=.5) {
             w_scores[i] = (1 - lam) * (sum / num_terms) + lam * scores[[i]]
         }
     }
-        
+    
     return(w_scores)
 }
 
