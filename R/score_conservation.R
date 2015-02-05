@@ -522,7 +522,7 @@ read_scoring_matrix <- function(sm_file) {
     tryCatch( {
         
         text <- readLines(sm_file,encoding="UTF-8")
-    
+        
         for (line in text) {
             if (line[1] != '#' & first_line) {
                 first_line = 0
