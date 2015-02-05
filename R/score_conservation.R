@@ -396,6 +396,8 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
 
 
 
+
+
 ################################################################################
 # Mutation Weighted Pairwise Match
 ################################################################################
