@@ -44,6 +44,7 @@ aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
 ################################################################################
 weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
     #""" Return the weighted frequency count for a column--with pseudocount."""
+<<<<<<< HEAD
     
     # if the weights do not match, use equal weight
     if (length(seq_weights) != length(col)){
@@ -61,6 +62,25 @@ weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
         freq_counts[j] = freq_counts[[j]] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
     return (freq_counts)
 }
+=======
+        
+        # if the weights do not match, use equal weight
+        if (length(seq_weights) != length(col)){
+seq_weights = rep(as.double(1.0),length(col))}
+    
+    aa_num = 1
+        freq_counts = rep(pc_amount,length(amino_acids)) # in order defined by amino_acids
+            
+            for (aa in amino_acids){
+for (j in 1:length(col)){
+    if (col[[j]] == aa){
+        freq_counts[aa_num] = freq_counts[[aa_num]] + rep(1,seq_weights[[j]])}
+        aa_num = aa_num + 1}}
+            for (j in 1:length(freq_counts)){
+freq_counts[j] = freq_counts[[j]] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
+    return (freq_counts)
+    }
+>>>>>>> FETCH_HEAD
 
 
 ################################################################################
@@ -476,7 +496,7 @@ calc_z_scores <- function(scores, score_cutoff) {
         if (s > score_cutoff) {
             average = average + s
             num_scores = num_scores + 1
-        }
+    }
     }
     
     if (num_scores != 0) {
@@ -486,8 +506,8 @@ calc_z_scores <- function(scores, score_cutoff) {
     for (s in scores) {
         if (s > score_cutoff) {
             std_dev = std_dev + ((s - average)**2) / num_scores
-        }
-    }
+}
+}
     
     std_dev = sqrt(std_dev)
     for (s in scores) {
@@ -496,7 +516,7 @@ calc_z_scores <- function(scores, score_cutoff) {
         }
         else {
             z_scores = c(z_scores, -1000.0)
-        }
+    }
     }
     
     return(z_scores)
@@ -519,7 +539,7 @@ read_scoring_matrix <- function(sm_file) {
     first_line = 1
     row = c()
     list_sm = c()
-    
+
     tryCatch( {
         
         text <- readLines(sm_file,encoding="UTF-8")
@@ -795,6 +815,7 @@ read_fasta_alignment <- function(filename){
 
 
 execute_conserve <- function(infile_name,
+<<<<<<< HEAD
 outfile_name,
 window_size=3,
 win_lam=0.5,
@@ -809,6 +830,22 @@ use_gap_penalty=1,
 seq_specific_output=NULL,
 normalize_scores=FALSE
 ) {
+=======
+                             outfile_name,
+                             window_size=3,
+                             win_lam=0.5,
+                             seq_weights=NULL,
+                             s_matrix_file="/blosum62.bla",
+                             bg_distribution=blosum_background_distr,
+                             scoring_function=js_divergence,
+                             use_seq_weights=TRUE,
+                             background_name='blosum62',
+                             gap_cutoff=0.3,
+                             use_gap_penalty=1,
+                             seq_specific_output=NULL,
+                             normalize_scores=FALSE
+                             ) {
+>>>>>>> FETCH_HEAD
     
     blosum_background_distr = c(0.078, 0.051, 0.041, 0.052, 0.024, 0.034, 0.059, 0.083, 0.025, 0.062, 0.092, 0.056, 0.024, 0.044, 0.043, 0.059, 0.055, 0.014, 0.034, 0.072)
     
