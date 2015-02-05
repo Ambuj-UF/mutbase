@@ -38,6 +38,7 @@ aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
 
 
 
+
 ################################################################################
 # Frequency count
 ################################################################################
@@ -655,6 +656,12 @@ get_distribution_from_file <- function(fname) {
 }
 
 
+
+#########################################################################
+# Utility functions
+#########################################################################
+
+
 replace_element <- function(stringElement, Obj1, Obj2) {
     new_vec = strsplit(stringElement, "")
     for (i in 1:length(new_vec[[1]])) {
@@ -669,12 +676,44 @@ replace_element <- function(stringElement, Obj1, Obj2) {
 }
 
 
+rem_last <- function(stObj) {
+    x = strsplit(stObj, "")[[1]]
+    x = x[-length(x)]
+    strRet = paste(x, collapse="")
+    return(strRet)
+}
+
+
+is.defined = function(x)!is.null(x)
+
+
+
+trim_seq <- function(stObj, initPos=NULL, endPos=NULL) {
+    newSeqList = strsplit(stObj, "")[[1]]
+    if (is.defined(initPos) == TRUE) {
+        removePosInit = c(1:initPos)
+    }
+    else { removePosInit = c() }
+    if (is.defined(endPos) == TRUE) {
+        removePosEnd = c(endPos:length(newSeqList))
+    }
+    else { removePosEnd = c() }
+    
+    removers = c(removePosInit, removePosEnd)
+    
+    newSeqList = newSeqList[-removers]
+    newSeq = paste(newSeqList, collapse="")
+    
+    return(newSeq)
+    
+}
+
+
 ###########################################################################################
 # Read fasta files
 ###########################################################################################
 
-read_fasta_alignment=function(filename){
-  """ Read in the alignment stored in the FASTA file, filename. Return two lists: the identifiers and sequences. """
+read_fasta_alignment <- function(filename){
 
   f = readLines(filename,encoding="UTF-8")
 
@@ -683,35 +722,50 @@ read_fasta_alignment=function(filename){
   cur_seq = ''
 
   for (line in f){
-    line = line[:-nchar(line)]}
-  if (length(line) == 0){ next }
-  if (line[1] == ';'){next} 
-  if (line[1] == '>'){
-    names.append(replace_element(line[2:].'\r', ''))}
+    line = rem_last(line)
+    if (nchar(line) == 0){ next }
+    if (line[[1]] == ';'){ next }
+    if (line[[1]] == '>'){
+        names = c(names, replace_element(trim_seq(line, initPos=2), '\r', ''))
 
-  if (cur_seq != ''){
-    cur_seq = toupper(cur_seq)
-    for (i in 1:length(cur_seq)) {
-      if (cur_seq[i] not in iupac_alphabet){
-        cur_seq = replace_element(cur_seq,cur_seq[i], '-')}}}
-  cur_seq=replace_element(cur_seq,'B','D')
-  cur_seq=replace_element(cur_seq,'Z','Q')
-  cur_seq=replace_element(cur_seq,'X','-')
-  alignment.append(cur_seq)
-  cur_seq = ''
-  else if (line[1] in iupac_alphabet){
-    cur_seq = cur_seq + replace_element(line,'\r', '')}
+        if (cur_seq != '') {
+            cur_seq = toupper(cur_seq)
+            for (i in 1:length(cur_seq)) {
+                if (!(cur_seq[[i]] %in% iupac_alphabet)){
+                    cur_seq = replace_element(cur_seq, cur_seq[[i]], '-')
+                }
+            }
+        }
+  
+        cur_seq = replace_element(cur_seq,'B','D')
+        cur_seq = replace_element(cur_seq,'Z','Q')
+        cur_seq = replace_element(cur_seq,'X','-')
+        alignment = c(alignment, cur_seq)
+        cur_seq = ''
+        
+    }
+    
+    else if (line[1] %in% iupac_alphabet){
+        cur_seq = cur_seq + replace_element(line,'\r', '')
+    }
+  }
 
   # add the last sequence
   cur_seq = toupper(cur_seq)
   for (i in 1:length(cur_seq)) {
-    if (cur_seq[i] not in iupac_alphabet){
-      cur_seq = replace_element(cur_seq,cur_seq[i], '-')}}
+      if (!(cur_seq[i] %in% iupac_alphabet)) {
+          cur_seq = replace_element(cur_seq,cur_seq[i], '-')
+      }
+  }
+  
   cur_seq=replace_element(cur_seq,'B','D')
   cur_seq=replace_element(cur_seq,'Z','Q')
   cur_seq=replace_element(cur_seq,'X','-')
-  alignment.append(cur_seq)
+  
+  alignment = c(alignment, cur_seq)
   return (c(names, alignment))
+  
+}
 
 
 
