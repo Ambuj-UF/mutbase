@@ -514,7 +514,7 @@ calc_z_scores <- function(scores, score_cutoff) {
 
 
 read_scoring_matrix <- function(sm_file) {
-    """ Read in a scoring matrix from a file, e.g., blosum80.bla, and return it as an array. """
+    #""" Read in a scoring matrix from a file, e.g., blosum80.bla, and return it as an array. """
     
     aa_index = 0
     first_line = 1
@@ -525,8 +525,8 @@ read_scoring_matrix <- function(sm_file) {
         
         text <- readLines(sm_file,encoding="UTF-8")
     
-        for (line in matrix_file) {
-            if (line[1] != '#' and first_line) {
+        for (line in text) {
+            if (line[1] != '#' & first_line) {
                 first_line = 0
                 if (length(amino_acids) == 0) {
                     for (c in strsplit(line, " ")) {
@@ -536,15 +536,17 @@ read_scoring_matrix <- function(sm_file) {
                     }
                 }
             }
-            elif (line[1] != '#' and first_line == 0) {
+            else if (line[1] != '#' & first_line == 0) {
                 if (nchar(line) > 1) {
                     row = strsplit(line, " ")
                     list_sm = c(list_sm, row)
                 }
             }
-        }, error = function(err) {
+        } 
+        error = function(err) {
             return(identity(20))
-        }, finally = {
+        } 
+        finally = {
             sprintf("Could not load similarity matrix: %s. Using identity matrix...", sm_file)
         }
     } )
@@ -801,12 +803,12 @@ execute_conserve <- function(infile_name,
                              s_matrix_file="matrix/blosum62.bla",
                              bg_distribution=blosum_background_distr,
                              scoring_function=js_divergence,
-                             use_seq_weights=True,
+                             use_seq_weights=TRUE,
                              background_name='blosum62',
                              gap_cutoff=0.3,
                              use_gap_penalty=1,
                              seq_specific_output=NULL,
-                             normalize_scores=False
+                             normalize_scores=FALSE
                              ) {
     
     blosum_background_distr = c(0.078, 0.051, 0.041, 0.052, 0.024, 0.034, 0.059, 0.083, 0.025, 0.062, 0.092, 0.056, 0.024, 0.044, 0.043, 0.059, 0.055, 0.014, 0.034, 0.072)
