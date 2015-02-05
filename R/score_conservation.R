@@ -84,11 +84,14 @@ weighted_gap_penalty=function(col, seq_weights){
   return (1 - (gap_sum / sum(seq_weights)))
 }
 
-gap_percentage=function(col){
-  """Return the percentage of gaps in col."""
+
+
+gap_percentage <- function(col){
+
    num_gaps = 0
    for (aa in col){
-     if (aa == '-'){ num_gaps += 1}}
+     if (aa == '-'){ num_gaps = num_gaps + 1}
+   }
 
    return (num_gaps / length(col))
 }
@@ -612,10 +615,10 @@ load_sequence_weights <- function(fname) {
 
 
 get_column <- function(col_num, alignment) {
-    """Return the col_num column of alignment as a list."""
     col = c()
-    for (seq in alignment) {
-        if (col_num < nchar(seq)) {
+    for (seq in alignment[[1]]) {
+        if (col_num <= nchar(seq)) {
+            seq = strsplit(seq, "")[[1]]
             col = c(col, seq[[col_num]])
         }
     }
@@ -857,11 +860,11 @@ execute_conserve <- function(infile_name,
     scores = c()
     
     
-    for (i in 1:length(alignment[[1]])) {
+    for (i in 1:nchar(alignment[[1]][1])) {
         col = get_column(i, alignment)
         if (length(col) == length(alignment)) {
             if (gap_percentage(col) <= gap_cutoff) {
-                scores = c(scores, append(scoring_function(col, s_matrix, bg_distribution, seq_weights, use_gap_penalty)))
+                scores = c(scores, scoring_function(col, s_matrix, bg_distribution, seq_weights, use_gap_penalty))
             }
             else {
                 scores = c(scores, -1000)
