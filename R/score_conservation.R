@@ -180,7 +180,6 @@ property_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty
 
 
 property_relative_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """Calculate the relative entropy of a column col relative to a partition of the amino acids. Similar to Williamson '95. sim_matrix is ignored, but could be used to define the sets. See shannon_entropy() for more general info. """
     
     # Mirny and Shakn. '99
     #property_partition = [['A','V','L','I','M','C'], ['F','W','Y','H'], ['S','T','N','Q'], ['K','R'], ['D', 'E'], ['G', 'P'], ['-']]
@@ -232,7 +231,6 @@ property_relative_entropy <- function(col, sim_matrix, bg_distr, seq_weights, ga
 
 
 vn_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """ Calculate the von Neuman Entropy as described in Caffrey et al. 04. This code was adapted from the implementation found in the PFAAT project available on SourceForge. bg_distr is ignored."""
     
     aa_counts = rep(0, 20)
     for (aa in col) {
@@ -441,7 +439,7 @@ window_score <- function(scores, window_len, lam=.5) {
     """ This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
     
     w_scores = scores
-    for (i in 1:length(window_len, length(scores) - window_len) {
+    for (i in window_len:length(scores) - window_len) {
         if (scores[[i]] < 0) {
             next
         }
