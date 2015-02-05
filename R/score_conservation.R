@@ -602,7 +602,7 @@ load_sequence_weights <- function(fname) {
     f = readLines(fname, encoding="UTF-8")
     for (line in f) {
         l = strsplit(line, " ")
-        if (line[[1]] != '#' and nchar(l) == 2) {
+        if (line[[1]][1] != '#' & nchar(l[[1]]) == 2) {
             seq_weights = c(seq_weights, l[[2]])
         }
     }
@@ -794,6 +794,7 @@ execute_conserve <- function(infile_name,
                              outfile_name,
                              window_size=3,
                              win_lam=0.5,
+                             seq_weights=NULL,
                              s_matrix_file="matrix/blosum62.bla",
                              bg_distribution=blosum_background_distr,
                              scoring_function=js_divergence,
@@ -801,7 +802,7 @@ execute_conserve <- function(infile_name,
                              background_name='blosum62',
                              gap_cutoff=0.3,
                              use_gap_penalty=1,
-                             seq_specific_output=0,
+                             seq_specific_output=NULL,
                              normalize_scores=False
                              ) {
     
@@ -809,11 +810,15 @@ execute_conserve <- function(infile_name,
     
     align_file = infile_name
     align_suffix_elements = strsplit(align_file, "\\.")
-    align_suffix = align_suffix_elements[[length(align_suffix_elements)]]
+    align_suffix = align_suffix_elements[[1]][1]
     s_matrix = read_scoring_matrix(s_matrix_file)
     names = c()
     alignment = c()
-    seq_weights = c()
+    
+    if (is.defined(seq_weights) == TRUE) {
+        seq_weights = c()
+    }
+    
     ali_out  = read_fasta_alignment(align_file)
     names = ali_out[[1]]; alignment = ali_out[[2]]
     
@@ -825,28 +830,34 @@ execute_conserve <- function(infile_name,
         }
     }
     
-    if (use_seq_weights) {
+    if (is.defined(seq_weights) == TRUE) {
         seq_weights = load_sequence_weights(replace_element(align_file, align_suffix, '.weights'))
         if (seq_weights == c()) {
             seq_weights = calculate_sequence_weights(alignment)
         }
+        if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment[[1]])) }
     }
+    else { seq_weights = rep(1, length(alignment[[1]])) }
     
-    if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment)) }
     
     # handle print of output relative to specific sequence
     ref_seq_num = "None"
-    if (seq_specific_output & !(seq_specific_output %in% names)) {
-        sprintf("Sequence %s not found in alignment. Using default output format...\n", seq_specific_output)
-        seq_specific_output = 0
+    if (is.defined(seq_specific_output) == TRUE) {
+        if (!(seq_specific_output %in% names[[1]])) {
+            sprintf("Sequence %s not found in alignment. Using default output format...\n", seq_specific_output)
+            seq_specific_output = 0
+        }
     }
-    else if (seq_specific_output %in% names) {
-        ref_seq_num = which(seq_specific_output %in% names)
+    
+    else if (seq_specific_output %in% names[[1]]) {
+        ref_seq_num = which(seq_specific_output %in% names[[1]])
     }
     
     # calculate scores
     scores = c()
-    for (i in 1:nchar(alignment[[1]])) {
+    
+    
+    for (i in 1:length(alignment[[1]])) {
         col = get_column(i, alignment)
         if (length(col) == length(alignment)) {
             if (gap_percentage(col) <= gap_cutoff) {
