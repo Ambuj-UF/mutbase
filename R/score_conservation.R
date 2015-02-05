@@ -75,7 +75,7 @@ weighted_gap_penalty=function(col, seq_weights){
   if (length(seq_weights) != length(col)){
      seq_weights = rep(as.double(1.0),length(col))}
 
-  gap_sum = 0
+  gap_sum =0
   for (i in 1:length(col)){
      if (col[i] == '-'){
         gap_sum += seq_weights[i]}}
