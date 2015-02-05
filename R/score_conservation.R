@@ -43,59 +43,58 @@ aa_to_index = hash(keys=amino_acids,values=1:length(amino_acids))
 # Frequency count
 ################################################################################
 weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
-  """ Return the weighted frequency count for a column--with pseudocount."""
-
-# if the weights do not match, use equal weight
-  if (length(seq_weights) != length(col)){
-    seq_weights = rep(as.double(1.0),length(col))}
-
-  aa_num = 1
-  freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
-
-  for (aa in amino_acids){
-    for (j in 1:length(col)){
-        if (col[j] == aa){
-          freq_counts[aa_num] += rep(1,seq_weights[j])}
-        aa_num += 1}}
-
-  for (j in 1:length(freq_counts)){
-    freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
-  return (freq_counts)
-  }
+    #""" Return the weighted frequency count for a column--with pseudocount."""
+    
+    # if the weights do not match, use equal weight
+    if (length(seq_weights) != length(col)){
+        seq_weights = rep(as.double(1.0),length(col))}
+    
+    aa_num = 1
+    freq_counts = rep(pc_amount,length(amino_acids)) # in order defined by amino_acids
+    
+    for (aa in amino_acids){
+        for (j in 1:length(col)){
+            if (col[[j]] == aa){
+                freq_counts[aa_num] = freq_counts[[aa_num]] + rep(1,seq_weights[[j]])}
+            aa_num = aa_num + 1}}
+    for (j in 1:length(freq_counts)){
+        freq_counts[j] = freq_counts[[j]] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
+    return (freq_counts)
+}
 
 
 ################################################################################
 # Gap Penalty
 ################################################################################
 weighted_gap_penalty=function(col, seq_weights){
-  """ Calculate the simple gap penalty multiplier for the column. If the 
-    sequences are weighted, the gaps, when penalized, are weighted 
+    """ Calculate the simple gap penalty multiplier for the column. If the
+    sequences are weighted, the gaps, when penalized, are weighted
     accordingly. """
-
-  # if the weights do not match, use equal weight
-  if (length(seq_weights) != length(col)){
-     seq_weights = rep(as.double(1.0),length(col))}
-
-  gap_sum =0
-  for (i in 1:length(col)){
-     if (col[i] == '-'){
-        gap_sum += seq_weights[i]}}
-
-  return (1 - (gap_sum / sum(seq_weights)))
+    
+    # if the weights do not match, use equal weight
+    if (length(seq_weights) != length(col)){
+        seq_weights = rep(as.double(1.0),length(col))}
+    
+    gap_sum =0
+    for (i in 1:length(col)){
+        if (col[i] == '-'){
+            gap_sum += seq_weights[i]}}
+    
+    return (1 - (gap_sum / sum(seq_weights)))
 }
 
 
 
 gap_percentage <- function(col){
-
-   num_gaps = 0
-   for (aa in col){
-     if (aa == '-'){ num_gaps = num_gaps + 1}
-   }
-
-   return (num_gaps / length(col))
+    
+    num_gaps = 0
+    for (aa in col){
+        if (aa == '-'){ num_gaps = num_gaps + 1}
+    }
+    
+    return (num_gaps / length(col))
 }
-  
+
 
 
 
@@ -106,9 +105,9 @@ gap_percentage <- function(col){
 
 shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
     """Calculates the Shannon entropy of the column col."""
-
+    
     fc = weighted_freq_count_pseudocount(col, seq_weights, PSEUDOCOUNT)
-
+    
     h = 0.
     for (i in 1:length(fc)) {
         if fc[[i]] != 0 {
@@ -118,8 +117,8 @@ shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=
     
     h = h/log(min(length(fc), length(col)))
     inf_score = 1 - (-1 * h)
-
-        
+    
+    
     if (gap_penalty == 1) {
         return inf_score * weighted_gap_penalty(col, seq_weights)
     }
@@ -138,38 +137,38 @@ property_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty
     """Calculate the entropy of a column col relative to a partition of the amino acids. Similar to Mirny '99. sim_matrix and bg_distr are ignored, but could be used to define the sets."""
     
     # Mirny and Shakn. '99
-     property_partition = list(list('A','V','L','I','M','C'), list('F','W','Y','H'), list('S','T','N','Q'), list('K','R'), list('D', 'E'), list('G', 'P'), list('-'))
-     
-     # Williamson '95
+    property_partition = list(list('A','V','L','I','M','C'), list('F','W','Y','H'), list('S','T','N','Q'), list('K','R'), list('D', 'E'), list('G', 'P'), list('-'))
     
-     # property_partition = [['V','L', 'I','M'], ['F','W','Y'], ['S','T'], ['N','Q'], ['H','K','R'], ['D','E'], ['A','G'], ['P'], ['C'], ['-']]
-     
-     fc = weighted_freq_count_pseudocount(col, seq_weights, PSEUDOCOUNT)
-     
-     # sum the aa frequencies to get the property frequencies
-     fc = rep(0, length(property_partition))
-     for (p in 1:length(property_partition)) {
-         for (aa in property_partition[[p]]) {
-             prop_fc[p] = prop_fc[[p]] + fc[[values(aa_to_index[aa])]]
-         }
-     }
-     
-     h = 0
-     
-     for (i in 1:length(prop_fc)) {
-         if (prop_fc[[i]] != 0) {
-             h = h + prop_fc[[i]] * log(prop_fc[[i]])
-         }
-     }
-     
-     h = h/log(min(length(property_partition), length(col)))
-     
-     if (gap_penalty == 1) {
-         return(inf_score * weighted_gap_penalty(col, seq_weights))
-     }
-     else {
-         return(inf_score)
-     }
+    # Williamson '95
+    
+    # property_partition = [['V','L', 'I','M'], ['F','W','Y'], ['S','T'], ['N','Q'], ['H','K','R'], ['D','E'], ['A','G'], ['P'], ['C'], ['-']]
+    
+    fc = weighted_freq_count_pseudocount(col, seq_weights, PSEUDOCOUNT)
+    
+    # sum the aa frequencies to get the property frequencies
+    fc = rep(0, length(property_partition))
+    for (p in 1:length(property_partition)) {
+        for (aa in property_partition[[p]]) {
+            prop_fc[p] = prop_fc[[p]] + fc[[values(aa_to_index[aa])]]
+        }
+    }
+    
+    h = 0
+    
+    for (i in 1:length(prop_fc)) {
+        if (prop_fc[[i]] != 0) {
+            h = h + prop_fc[[i]] * log(prop_fc[[i]])
+        }
+    }
+    
+    h = h/log(min(length(property_partition), length(col)))
+    
+    if (gap_penalty == 1) {
+        return(inf_score * weighted_gap_penalty(col, seq_weights))
+    }
+    else {
+        return(inf_score)
+    }
 }
 
 
@@ -396,6 +395,8 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
 
 
 
+
+
 ################################################################################
 # Mutation Weighted Pairwise Match
 ################################################################################
@@ -436,18 +437,18 @@ sum_of_pairs <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) 
 ################################################################################
 
 window_score <- function(scores, window_len, lam=.5) {
-    """ This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
+    #""" This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
     
     w_scores = scores
-    for (i in window_len:length(scores) - window_len) {
+    for (i in window_len:(length(scores) - window_len)) {
         if (scores[[i]] < 0) {
             next
         }
-    
+        
         sum = 0
         num_terms = 0
-        for (j in 1:(i - window_len, i + window_len + 1)) {
-            if (i != j and scores[[j]] >= 0) {
+        for (j in (i - window_len): (i + window_len + 1)) {
+            if (i != j & scores[[j]] >= 0) {
                 num_terms = num_terms + 1
                 sum = sum + scores[j]
             }
@@ -457,14 +458,14 @@ window_score <- function(scores, window_len, lam=.5) {
             w_scores[i] = (1 - lam) * (sum / num_terms) + lam * scores[[i]]
         }
     }
-        
+    
     return(w_scores)
 }
 
 
 
 calc_z_scores <- function(scores, score_cutoff) {
-    """Calculates the z-scores for a set of scores. Scores below score_cutoff are not included."""
+    #"""Calculates the z-scores for a set of scores. Scores below score_cutoff are not included."""
     
     average = 0
     std_dev = 0
@@ -490,7 +491,7 @@ calc_z_scores <- function(scores, score_cutoff) {
     
     std_dev = sqrt(std_dev)
     for (s in scores) {
-        if (s > score_cutoff and std_dev != 0) {
+        if (s > score_cutoff & std_dev != 0) {
             z_scores = c(z_scores, (s-average)/std_dev)
         }
         else {
@@ -522,9 +523,9 @@ read_scoring_matrix <- function(sm_file) {
     tryCatch( {
         
         text <- readLines(sm_file,encoding="UTF-8")
-    
+        
         for (line in text) {
-            if (line[1] != '#' & first_line) {
+            if (strsplit(line, "")[[1]][1] != '#' & first_line) {
                 first_line = 0
                 if (length(amino_acids) == 0) {
                     for (c in strsplit(line, " ")) {
@@ -534,16 +535,16 @@ read_scoring_matrix <- function(sm_file) {
                     }
                 }
             }
-            else if (line[1] != '#' & first_line == 0) {
+            else if (strsplit(line, "")[[1]][1] != '#' & first_line == 0) {
                 if (nchar(line) > 1) {
                     row = strsplit(line, " ")
                     list_sm = c(list_sm, row)
                 }
             }
-        } 
+        }
         error = function(err) {
             return(identity(20))
-        } 
+        }
         finally = {
             sprintf("Could not load similarity matrix: %s. Using identity matrix...", sm_file)
         }
@@ -552,7 +553,7 @@ read_scoring_matrix <- function(sm_file) {
     # if matrix is stored in lower tri form, copy to upper
     if (length(list_sm[[1]]) < 20) {
         for (i in 1:19) {
-            for (j in i+1:20) {
+            for (j in (i+1):20) {
                 list_sm[i] = c(list_sm[i], list_sm[[j]][i])
             }
         }
@@ -726,61 +727,61 @@ search_element <- function(stObj, search_obj) {
 ###########################################################################################
 
 read_fasta_alignment <- function(filename){
-
-  f = readLines(filename,encoding="UTF-8")
-
-  names = c()
-  alignment = c()
-  cur_seq = ''
-
-  for (line in f){
-    line = rem_last(line)
-    if (nchar(line) == 0){ next }
-    if (line[[1]] == ';'){ next }
-    if (search_element(line[[1]], '>')) {
-        names = c(names, trim_seq(line[[1]], initPos=1)[[1]])
-
-        if (cur_seq != '') {
-            cur_seq = toupper(cur_seq)
-            aminos = strsplit(cur_seq, "")[[1]]
-            for (i in 1:length(aminos)) {
-                if (!(aminos[[i]] %in% iupac_alphabet)) {
-                    aminos[i] = "-"
-                }
-            }
+    
+    f = readLines(filename,encoding="UTF-8")
+    
+    names = c()
+    alignment = c()
+    cur_seq = ''
+    
+    for (line in f){
+        line = rem_last(line)
+        if (nchar(line) == 0){ next }
+        if (line[[1]] == ';'){ next }
+        if (search_element(line[[1]], '>')) {
+            names = c(names, trim_seq(line[[1]], initPos=1)[[1]])
             
-            cur_seq = paste(aminos, collapse="")
-  
-            cur_seq = replace_element(cur_seq,'B','D')
-            cur_seq = replace_element(cur_seq,'Z','Q')
-            cur_seq = replace_element(cur_seq,'X','-')
-            alignment = c(alignment, cur_seq)
-            cur_seq = ''
+            if (cur_seq != '') {
+                cur_seq = toupper(cur_seq)
+                aminos = strsplit(cur_seq, "")[[1]]
+                for (i in 1:length(aminos)) {
+                    if (!(aminos[[i]] %in% iupac_alphabet)) {
+                        aminos[i] = "-"
+                    }
+                }
+                
+                cur_seq = paste(aminos, collapse="")
+                
+                cur_seq = replace_element(cur_seq,'B','D')
+                cur_seq = replace_element(cur_seq,'Z','Q')
+                cur_seq = replace_element(cur_seq,'X','-')
+                alignment = c(alignment, cur_seq)
+                cur_seq = ''
+            }
+        }
+        
+        else if (strsplit(line, "")[[1]][1] %in% iupac_alphabet){
+            cur_seq = paste(cur_seq, line[[1]], sep="")
+        }
+        
+    }
+    
+    cur_seq = toupper(cur_seq)
+    aminos = strsplit(cur_seq, "")[[1]]
+    for (i in 1:length(aminos)) {
+        if (!(aminos[[i]] %in% iupac_alphabet)) {
+            aminos[i] = "-"
         }
     }
     
-    else if (strsplit(line, "")[[1]][1] %in% iupac_alphabet){
-        cur_seq = paste(cur_seq, line[[1]], sep="")
-    }
+    cur_seq = paste(aminos, collapse="")
+    cur_seq = replace_element(cur_seq,'B','D')
+    cur_seq = replace_element(cur_seq,'Z','Q')
+    cur_seq = replace_element(cur_seq,'X','-')
     
-  }
-  
-  cur_seq = toupper(cur_seq)
-  aminos = strsplit(cur_seq, "")[[1]]
-  for (i in 1:length(aminos)) {
-    if (!(aminos[[i]] %in% iupac_alphabet)) {
-        aminos[i] = "-"
-    }
-  }
-  
-  cur_seq = paste(aminos, collapse="")
-  cur_seq = replace_element(cur_seq,'B','D')
-  cur_seq = replace_element(cur_seq,'Z','Q')
-  cur_seq = replace_element(cur_seq,'X','-')
-  
-  alignment = c(alignment, cur_seq)
-  return (list(names,alignment))
-  
+    alignment = c(alignment, cur_seq)
+    return (list(names,alignment))
+    
 }
 
 
@@ -794,20 +795,20 @@ read_fasta_alignment <- function(filename){
 
 
 execute_conserve <- function(infile_name,
-                             outfile_name,
-                             window_size=3,
-                             win_lam=0.5,
-                             seq_weights=NULL,
-                             s_matrix_file="matrix/blosum62.bla",
-                             bg_distribution=blosum_background_distr,
-                             scoring_function=js_divergence,
-                             use_seq_weights=TRUE,
-                             background_name='blosum62',
-                             gap_cutoff=0.3,
-                             use_gap_penalty=1,
-                             seq_specific_output=NULL,
-                             normalize_scores=FALSE
-                             ) {
+outfile_name,
+window_size=3,
+win_lam=0.5,
+seq_weights=NULL,
+s_matrix_file="/blosum62.bla",
+bg_distribution=blosum_background_distr,
+scoring_function=js_divergence,
+use_seq_weights=TRUE,
+background_name='blosum62',
+gap_cutoff=0.3,
+use_gap_penalty=1,
+seq_specific_output=NULL,
+normalize_scores=FALSE
+) {
     
     blosum_background_distr = c(0.078, 0.051, 0.041, 0.052, 0.024, 0.034, 0.059, 0.083, 0.025, 0.062, 0.092, 0.056, 0.024, 0.044, 0.043, 0.059, 0.055, 0.014, 0.034, 0.072)
     
@@ -838,9 +839,9 @@ execute_conserve <- function(infile_name,
         if (seq_weights == c()) {
             seq_weights = calculate_sequence_weights(alignment)
         }
-        if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment[[1]])) }
+        if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment)) }
     }
-    else { seq_weights = rep(1, length(alignment[[1]])) }
+    else { seq_weights = rep(1, length(alignment)) }
     
     
     # handle print of output relative to specific sequence
