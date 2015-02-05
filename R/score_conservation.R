@@ -684,7 +684,7 @@ rem_last <- function(stObj) {
 }
 
 
-is.defined = function(x)!is.null(x)
+is.defined <- function(x) !is.null(x)
 
 
 
@@ -709,6 +709,15 @@ trim_seq <- function(stObj, initPos=NULL, endPos=NULL) {
 }
 
 
+
+search_element <- function(stObj, search_obj) {
+    if ( search_obj %in% strsplit(stObj, "")[[1]] ) {return(TRUE)}
+    else {return(FALSE)}
+}
+
+
+
+
 ###########################################################################################
 # Read fasta files
 ###########################################################################################
@@ -725,42 +734,46 @@ read_fasta_alignment <- function(filename){
     line = rem_last(line)
     if (nchar(line) == 0){ next }
     if (line[[1]] == ';'){ next }
-    if (line[[1]] == '>'){
-        names = c(names, replace_element(trim_seq(line, initPos=2), '\r', ''))
+    if (search_element(line[[1]], '>')) {
+        names = c(names, trim_seq(line[[1]], initPos=1)[[1]])
 
         if (cur_seq != '') {
             cur_seq = toupper(cur_seq)
-            for (i in 1:length(cur_seq)) {
-                if (!(cur_seq[[i]] %in% iupac_alphabet)){
-                    cur_seq = replace_element(cur_seq, cur_seq[[i]], '-')
+            aminos = strsplit(cur_seq, "")[[1]]
+            for (i in 1:length(aminos)) {
+                if (!(aminos[[i]] %in% iupac_alphabet)) {
+                    aminos[i] = "-"
                 }
             }
-        }
+            
+            cur_seq = paste(aminos, collapse="")
   
-        cur_seq = replace_element(cur_seq,'B','D')
-        cur_seq = replace_element(cur_seq,'Z','Q')
-        cur_seq = replace_element(cur_seq,'X','-')
-        alignment = c(alignment, cur_seq)
-        cur_seq = ''
-        
+            cur_seq = replace_element(cur_seq,'B','D')
+            cur_seq = replace_element(cur_seq,'Z','Q')
+            cur_seq = replace_element(cur_seq,'X','-')
+            alignment = c(alignment, cur_seq)
+            cur_seq = ''
+        }
     }
     
-    else if (line[1] %in% iupac_alphabet){
-        cur_seq = cur_seq + replace_element(line,'\r', '')
+    else if (strsplit(line, "")[[1]][1] %in% iupac_alphabet){
+        cur_seq = paste(cur_seq, line[[1]], sep="")
     }
-  }
-
-  # add the last sequence
-  cur_seq = toupper(cur_seq)
-  for (i in 1:length(cur_seq)) {
-      if (!(cur_seq[i] %in% iupac_alphabet)) {
-          cur_seq = replace_element(cur_seq,cur_seq[i], '-')
-      }
+    
   }
   
-  cur_seq=replace_element(cur_seq,'B','D')
-  cur_seq=replace_element(cur_seq,'Z','Q')
-  cur_seq=replace_element(cur_seq,'X','-')
+  cur_seq = toupper(cur_seq)
+  aminos = strsplit(cur_seq, "")[[1]]
+  for (i in 1:length(aminos)) {
+    if (!(aminos[[i]] %in% iupac_alphabet)) {
+        aminos[i] = "-"
+    }
+  }
+  
+  cur_seq = paste(aminos, collapse="")
+  cur_seq = replace_element(cur_seq,'B','D')
+  cur_seq = replace_element(cur_seq,'Z','Q')
+  cur_seq = replace_element(cur_seq,'X','-')
   
   alignment = c(alignment, cur_seq)
   return (c(names, alignment))
