@@ -520,13 +520,13 @@ read_scoring_matrix <- function(sm_file) {
     first_line = 1
     row = c()
     list_sm = c()
-    
+
     tryCatch( {
         
         text <- readLines(sm_file,encoding="UTF-8")
         
         for (line in text) {
-            if (line[1] != '#' & first_line) {
+            if (strsplit(line, "")[[1]][1] != '#' & first_line) {
                 first_line = 0
                 if (length(amino_acids) == 0) {
                     for (c in strsplit(line, " ")) {
@@ -536,7 +536,7 @@ read_scoring_matrix <- function(sm_file) {
                     }
                 }
             }
-            else if (line[1] != '#' & first_line == 0) {
+            else if (strsplit(line, "")[[1]][1] != '#' & first_line == 0) {
                 if (nchar(line) > 1) {
                     row = strsplit(line, " ")
                     list_sm = c(list_sm, row)
@@ -554,7 +554,7 @@ read_scoring_matrix <- function(sm_file) {
     # if matrix is stored in lower tri form, copy to upper
     if (length(list_sm[[1]]) < 20) {
         for (i in 1:19) {
-            for (j in i+1:20) {
+            for (j in (i+1):20) {
                 list_sm[i] = c(list_sm[i], list_sm[[j]][i])
             }
         }
@@ -800,7 +800,7 @@ execute_conserve <- function(infile_name,
                              window_size=3,
                              win_lam=0.5,
                              seq_weights=NULL,
-                             s_matrix_file="matrix/blosum62.bla",
+                             s_matrix_file="/blosum62.bla",
                              bg_distribution=blosum_background_distr,
                              scoring_function=js_divergence,
                              use_seq_weights=TRUE,
