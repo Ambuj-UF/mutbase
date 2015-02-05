@@ -50,16 +50,15 @@ weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
 seq_weights = rep(as.double(1.0),length(col))}
     
     aa_num = 1
-        freq_counts = rep(length(amino_acids),pc_amount) # in order defined by amino_acids
+        freq_counts = rep(pc_amount,length(amino_acids)) # in order defined by amino_acids
             
             for (aa in amino_acids){
 for (j in 1:length(col)){
-    if (col[j] == aa){
-        freq_counts[aa_num] = freq_counts[aa_num] + rep(1,seq_weights[j])}
+    if (col[[j]] == aa){
+        freq_counts[aa_num] = freq_counts[[aa_num]] + rep(1,seq_weights[[j]])}
         aa_num = aa_num + 1}}
-            
             for (j in 1:length(freq_counts)){
-freq_counts[j] = freq_counts[j] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
+freq_counts[j] = freq_counts[[j]] / (sum(seq_weights) + length(amino_acids) * pc_amount)}
     return (freq_counts)
     }
 
@@ -840,9 +839,9 @@ execute_conserve <- function(infile_name,
         if (seq_weights == c()) {
             seq_weights = calculate_sequence_weights(alignment)
         }
-        if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment[[1]])) }
+        if (length(seq_weights) != length(alignment)) { seq_weights = rep(1, length(alignment)) }
     }
-    else { seq_weights = rep(1, length(alignment[[1]])) }
+    else { seq_weights = rep(1, length(alignment)) }
     
     
     # handle print of output relative to specific sequence
