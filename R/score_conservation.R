@@ -815,18 +815,18 @@ execute_conserve <- function(infile_name,
     alignment = c()
     seq_weights = c()
     ali_out  = read_fasta_alignment(align_file)
-    names = ali_out[1]; alignment = ali_out[2]
+    names = ali_out[[1]]; alignment = ali_out[[2]]
     
-    seq_len = nchar(alignment[[1]])
-    for (i in length(alignment)) {
-        if (nchar(alignment[[i]]) != seq_len) {
+    seq_len = nchar(alignment[[1]][1])
+    for (i in length(alignment[[1]])) {
+        if (nchar(alignment[[i]][1]) != seq_len) {
             sprintf("ERROR: Sequences of different lengths: %s (%d) != %s (%d).\n", names[[1]], seq_len, names[[i]], nchar(seq))
             quit()
         }
     }
     
     if (use_seq_weights) {
-        seq_weights = load_sequence_weights(.replace(align_file, align_suffix, '.weights'))
+        seq_weights = load_sequence_weights(replace_element(align_file, align_suffix, '.weights'))
         if (seq_weights == c()) {
             seq_weights = calculate_sequence_weights(alignment)
         }
