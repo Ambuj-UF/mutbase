@@ -466,7 +466,7 @@ window_score <- function(scores, window_len, lam=.5) {
 
 
 calc_z_scores <- function(scores, score_cutoff) {
-    """Calculates the z-scores for a set of scores. Scores below score_cutoff are not included."""
+    #"""Calculates the z-scores for a set of scores. Scores below score_cutoff are not included."""
     
     average = 0
     std_dev = 0
@@ -477,7 +477,7 @@ calc_z_scores <- function(scores, score_cutoff) {
         if (s > score_cutoff) {
             average = average + s
             num_scores = num_scores + 1
-        }
+    }
     }
     
     if (num_scores != 0) {
@@ -487,17 +487,17 @@ calc_z_scores <- function(scores, score_cutoff) {
     for (s in scores) {
         if (s > score_cutoff) {
             std_dev = std_dev + ((s - average)**2) / num_scores
-        }
-    }
+}
+}
     
     std_dev = sqrt(std_dev)
     for (s in scores) {
-        if (s > score_cutoff and std_dev != 0) {
+        if (s > score_cutoff & std_dev != 0) {
             z_scores = c(z_scores, (s-average)/std_dev)
         }
         else {
             z_scores = c(z_scores, -1000.0)
-        }
+    }
     }
     
     return(z_scores)
