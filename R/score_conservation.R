@@ -302,7 +302,7 @@ vn_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
 ################################################################################
 
 relative_entropy <- function(col, sim_matix, bg_distr, seq_weights, gap_penalty=1) {
-    """Calculate the relative entropy of the column distribution with a background distribution specified in bg_distr. This is similar to the approach proposed in Wang and Samudrala 06. sim_matrix is ignored."""
+    ###Calculate the relative entropy of the column distribution with a background distribution specified in bg_distr. This is similar to the approach proposed in Wang and Samudrala 06. sim_matrix is ignored."""
     
     distr = bg_distr
     fc = weighted_freq_count_pseudocount(col, seq_weights, PSEUDOCOUNT)
@@ -344,7 +344,7 @@ relative_entropy <- function(col, sim_matix, bg_distr, seq_weights, gap_penalty=
 ################################################################################
 
 js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """ Return the Jensen-Shannon Divergence for the column with the background distribution bg_distr. sim_matrix is ignored. JSD is the default method."""
+    ###Return the Jensen-Shannon Divergence for the column with the background distribution bg_distr. sim_matrix is ignored. JSD is the default method."""
     
     distr = bg_distr
     
@@ -362,7 +362,7 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
     
     fc = new_fc
     
-    if length(fc) != length(distr) { return(-1) }
+    if (length(fc) != length(distr)) { return(-1) }
     
     # make r distriubtion
     r = c()
@@ -376,7 +376,7 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
             if (fc[[i]] == 0.0) {
                 d = d + distr[[i]] * log(distr[[i]]/r[[i]], 2)
             }
-            elif (distr[[i]] == 0.0) {
+            else if (distr[[i]] == 0.0) {
                 d = d + fc[[i]] * log(fc[[i]]/r[[i]], 2)
             }
             else {
