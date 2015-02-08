@@ -20,6 +20,11 @@
 ################################################################################################################
 
 # Calculates coevlving amino acid sites
+# Idea is to examine the deleterious property of point mutation
+# by estimating the functional importance of residue position using
+# coevolution dyanamics
+
+
 
 library(Biostrings)
 
