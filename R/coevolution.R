@@ -373,6 +373,16 @@ modulate <- function(value) {
 
 
 
+pick_significant <- function(corScore, cutoff) {
+    retList = list()
+    for (i in length(corScore)) {
+        if (corScore[[names(corScore[[i]])]][[4]] >= cutoff) {
+            retList[names(corScore[[i]])] = corScore[[names(corScore[[i]])]]
+        }
+    }
+    
+    return(retList)
+}
 
 
 
