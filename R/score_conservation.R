@@ -69,9 +69,9 @@ weighted_freq_count_pseudocount=function(col, seq_weights, pc_amount){
 # Gap Penalty
 ################################################################################
 weighted_gap_penalty=function(col, seq_weights){
-    """ Calculate the simple gap penalty multiplier for the column. If the
-    sequences are weighted, the gaps, when penalized, are weighted
-    accordingly. """
+    #""" Calculate the simple gap penalty multiplier for the column. If the
+    #sequences are weighted, the gaps, when penalized, are weighted
+    #accordingly. """
     
     # if the weights do not match, use equal weight
     if (length(seq_weights) != length(col)){
@@ -80,7 +80,7 @@ weighted_gap_penalty=function(col, seq_weights){
     gap_sum =0
     for (i in 1:length(col)){
         if (col[i] == '-'){
-            gap_sum += seq_weights[i]}}
+            gap_sum = gap_sum + seq_weights[i]}}
     
     return (1 - (gap_sum / sum(seq_weights)))
 }
@@ -106,13 +106,13 @@ gap_percentage <- function(col){
 
 
 shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """Calculates the Shannon entropy of the column col."""
+    #"""Calculates the Shannon entropy of the column col."""
     
     fc = weighted_freq_count_pseudocount(col, seq_weights, PSEUDOCOUNT)
     
     h = 0.
     for (i in 1:length(fc)) {
-        if fc[[i]] != 0 {
+        if (fc[[i]] != 0) {
             h = h + fc[[i]] * log(fc[[i]])
         }
     }
@@ -122,10 +122,10 @@ shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=
     
     
     if (gap_penalty == 1) {
-        return inf_score * weighted_gap_penalty(col, seq_weights)
+        return (inf_score * weighted_gap_penalty(col, seq_weights))
     }
     else {
-        return inf_score
+        return(inf_score)
     }
 }
 
@@ -136,7 +136,7 @@ shannon_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=
 ################################################################################
 
 property_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """Calculate the entropy of a column col relative to a partition of the amino acids. Similar to Mirny '99. sim_matrix and bg_distr are ignored, but could be used to define the sets."""
+    #"""Calculate the entropy of a column col relative to a partition of the amino acids. Similar to Mirny '99. sim_matrix and bg_distr are ignored, but could be used to define the sets."""
     
     # Mirny and Shakn. '99
     property_partition = list(list('A','V','L','I','M','C'), list('F','W','Y','H'), list('S','T','N','Q'), list('K','R'), list('D', 'E'), list('G', 'P'), list('-'))
@@ -190,7 +190,7 @@ property_relative_entropy <- function(col, sim_matrix, bg_distr, seq_weights, ga
     
     prop_bg_freq = c()
     
-    if len(bg_distr) == len(property_partition) {
+    if (len(bg_distr) == len(property_partition)) {
         prop_bg_freq = bg_distr
     }
     else {
@@ -266,13 +266,19 @@ vn_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
     ev = eigen(dm)
     
     ev_vector = c()
-    for (x in ev){for (j in x) {ev_vector <- c(ev_vector, j)}}
+    for (x in ev){
+        for (j in x) {
+            ev_vector <- c(ev_vector, j)
+        }
+    }
     
     temp = 0
-    for (e in ev_vector) {temp = temp + e}
+    for (e in ev_vector) {
+        temp = temp + e
+    }
     
     if (temp != 0) {
-        for (i in 1:length(ev_vector) {
+        for (i in 1:length(ev_vector)) {
             ev_vector[i] = ev_vector/temp
         }
     }
@@ -280,7 +286,7 @@ vn_entropy <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
     vne = 0
     
     for (e in ev_vector) {
-        if e > (10**-10) {
+        if (e > (10**-10)) {
             vne = vne - e * log(e) / log(20)
         }
     }
@@ -317,11 +323,11 @@ relative_entropy <- function(col, sim_matix, bg_distr, seq_weights, gap_penalty=
     }
     
     fc = new_fc
-    if (length(fc) != length(distr) { return(-1) }
+    if (length(fc) != length(distr)) { return(-1) }
     
     d = 0
     for (i in 1:length(fc)) {
-        if distr[[i]] != 0.0 {
+        if (distr[[i]] != 0.0) {
             d = d + fc[[i]] * log(fc[[i]]/distr[[i]])
         }
     }
@@ -379,7 +385,7 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
                 d = d + fc[[i]] * log(fc[[i]]/r[[i]], 2)
             }
             else {
-                d = d + fc[[i]] * log(fc[[i]]/r[[i]], 2) + distr[[i]] * math.log(distr[[i]]/r[[i]], 2)
+                d = d + fc[[i]] * log(fc[[i]]/r[[i]], 2) + distr[[i]] * log(distr[[i]]/r[[i]], 2)
             }
             
         }
@@ -404,13 +410,13 @@ js_divergence <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1)
 ################################################################################
 
 sum_of_pairs <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) {
-    """ Sum the similarity matrix values for all pairs in the column. This method is similar to those proposed in Valdar 02. bg_distr is ignored."""
+    #""" Sum the similarity matrix values for all pairs in the column. This method is similar to those proposed in Valdar 02. bg_distr is ignored."""
     
     sum = 0
     max_sum = 0
     for (i in 1:length(col)) {
         for (j in 1:length(i)) {
-            if (col[[i]] != '-' and col[[j]] != '-') {
+            if (col[[i]] != '-' & col[[j]] != '-') {
                 max_sum = max_sum + seq_weights[[i]] * seq_weights[[j]]
                 sum = sum + seq_weights[[i]] * seq_weights[[j]] * sim_matrix[[values(aa_to_index[col[[i]]])]][[values(aa_to_index[col[[j]]])]]
             }
@@ -438,7 +444,7 @@ sum_of_pairs <- function(col, sim_matrix, bg_distr, seq_weights, gap_penalty=1) 
 # Window Score
 ################################################################################
 
-window_score <- function(scores, window_len, lam=.5) {
+window_score <- function(scores, window_len, lam=0.5) {
     #""" This function takes a list of scores and a length and transforms them so that each position is a weighted average of the surrounding positions. Positions with scores less than zero are not changed and are ignored in the calculation. Here window_len is interpreted to mean window_len residues on either side of the current residue. """
     
     w_scores = scores
@@ -450,9 +456,9 @@ window_score <- function(scores, window_len, lam=.5) {
         sum = 0
         num_terms = 0
         for (j in (i - window_len): (i + window_len + 1)) {
-            if (i != j & scores[[j]] >= 0) {
+            if (i != j & scores[[j+1]] >= 0) {
                 num_terms = num_terms + 1
-                sum = sum + scores[j]
+                sum = sum + scores[[j]]
             }
         }
         
@@ -488,8 +494,8 @@ calc_z_scores <- function(scores, score_cutoff) {
     for (s in scores) {
         if (s > score_cutoff) {
             std_dev = std_dev + ((s - average)**2) / num_scores
-}
-}
+        }
+    }
     
     std_dev = sqrt(std_dev)
     for (s in scores) {
@@ -498,7 +504,7 @@ calc_z_scores <- function(scores, score_cutoff) {
         }
         else {
             z_scores = c(z_scores, -1000.0)
-    }
+        }
     }
     
     return(z_scores)
@@ -567,7 +573,7 @@ read_scoring_matrix <- function(sm_file) {
 
 
 calculate_sequence_weights <- function(msa) {
-    """ Calculate the sequence weights using the Henikoff '94 method for the given msa. """
+    #""" Calculate the sequence weights using the Henikoff '94 method for the given msa. """
     
     seq_weights = rep(0, length(msa))
     
@@ -589,13 +595,13 @@ calculate_sequence_weights <- function(msa) {
         
         for (j in 1:length(msa)) {
             d = freq_counts[[aa_to_index[[msa[[j]][i]]]]] * num_observed_types
-            if d > 0 {
+            if (d > 0) {
                 seq_weights[j] = seq_weights[[j]] + 1/d
             }
         }
     }
     
-    for w in range(len(seq_weights)) {
+    for (w in range(len(seq_weights))) {
         seq_weights[w] = seq_weights[[w]] / length(msa[[1]])
     }
     
@@ -640,7 +646,7 @@ map_float <- function(vec_Obj) {
 
 
 get_distribution_from_file <- function(fname) {
-    """ Read an amino acid distribution from a file. The probabilities should be on a single line separated by whitespace in alphabetical order as in amino_acids above. # is the comment character."""
+    #""" Read an amino acid distribution from a file. The probabilities should be on a single line separated by whitespace in alphabetical order as in amino_acids above. # is the comment character."""
     
     distribution = c()
     f = readLines(fname, encoding="UTF-8")
@@ -652,7 +658,7 @@ get_distribution_from_file <- function(fname) {
         }
     }
     
-    if (.997 > sum(distribution) or sum(distribution) > 1.003) {
+    if (0.997 > sum(distribution) | sum(distribution) > 1.003) {
         sprintf("Distribution does not sum to 1. Using default (BLOSUM62) background.")
         sprintf(sum(distribution))
         return(c())
@@ -867,6 +873,7 @@ execute_conserve <- function(infile_name,
     for (i in 1:nchar(alignment[[1]][1])) {
         col = get_column(i, alignment)
         if (length(col) == length(alignment)) {
+            print()
             if (gap_percentage(col) <= gap_cutoff) {
                 scores = c(scores, scoring_function(col, s_matrix, bg_distribution, seq_weights, use_gap_penalty))
             }
@@ -874,6 +881,7 @@ execute_conserve <- function(infile_name,
                 scores = c(scores, -1000)
             }
         }
+        else {scores = c(scores, 0)}
     }
     
     if (window_size > 0) {
