@@ -296,18 +296,35 @@ variability <- function (thetaEKVals, meanThetaEK) {
 
 meanVar <- function(variabilityData) {
     allVar = c()
-    for (i in 1:length(names(variabilityData))) {
-        for (var in variabilityData[names(variabilityData)[i]]) {
-            allVar = c(allVar, var)
-        }
+    for (i in 1:length(variabilityData)) {
+        variabilityData[names(variabilityData)[[i]]] = mean(variabilityData[[names(variabilityData)[[i]]]])
     }
     
-    return(mean(allVar))
+    return(variabilityData)
+}
+
+
+listAverage <- function(listObj) {
+    data = c()
+    for (i in 1: length(listObj)) {
+        data = c(data, listObj[[names(listObj)[[i]]]])
+    }
+    
+    return(mean(data))
 }
 
 
 thetaParam <- function(meanVarDict) {
+    lengthAlign = length(meanVarDict)
+    thetaParamVal = listAverage(meanVarDict)/length(meanVarDict)
+    posCorExec = c()
+    for (i in length(meanVarDict)) {
+        if (meanVarDict[[names(meanVarDict)[[i]]]] > thetaParamVal) {
+            posCorExec = c(posCorExec, names(meanVarDict)[[i]])
+        }
+    }
     
+    return posCorExec
 }
 
 
