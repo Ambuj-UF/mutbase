@@ -179,52 +179,6 @@ z_table <- list(
 
 
 
-li_synonymous <- (recordObj) {
-
-    syn_distance = 0
-    inRecStore = c()
-    L = c(); Ts = c(); Tv = c(); A = c(); B = c()
-    counter = 0
-    while (counter <= ) {
-        L = c(L, 0)
-        Ts = c(Ts, 0)
-        Tv = c(Tv, 0)
-        A = c(A, 0)
-        B = c(B, 0)
-        counter = counter + 1
-    }
-
-    for (rec in recordObj) {
-        inRec = c()
-        inRecStore = c(inRecStore, rec[[id]])
-        for (x in recordObj) {
-            if (!(x[[id]] %in% inRecStore)) {
-                inRec = c(inRec, x)
-            }
-        }
-        
-        for (inrec in inRec) {
-            codonSeq1 = spliter(rec[[seq]], 3)
-            codonSeq2 = spliter(inrec[[seq]], 3)
-            for (i in length(codonSeq1)) {
-                L_Ts_Tv = deg_transvers(codonSeq1[[i]], codonSeq2[[i]], L, Ts, Tv)
-            }
-            
-            A_B = calculate_A_B(Ts, Tv, L, A, B)
-            
-            if (L[[2]] + L[[3]] > 0) {
-                syn_distance = syn_distance + (((L[[2]]*A[[2]]) + (L[[3]]*A[[3]]))/(L[[2]] + L[[3]])) + B[[3]]
-            }
-            else {
-                syn_distance = syn_distance + B[[2]]
-            }
-        }
-    }
-    
-    return(syn_distance)
-    
-}
-
 
 
 
@@ -273,11 +227,11 @@ optimize <- function (seqObj) {
     distance = list()
     seqNameVec = c()
     for (i in 1:length(names(seqObj))) {
-        seqNameVec = c(seqNameVec, names(seqObj[i]))
+        seqNameVec = c(seqNameVec, names(seqObj[[i]]))
         inSeqObj = seqObj[!names(seqObj[i]) %in% seqNameVec]
-        seq1 = seqObj[i][names(seqObj[i])]
+        seq1 = seqObj[[i]][[names(seqObj[i])]]
         for (j in 1:length(names(seqNameVec))) {
-            seq2 = seqObj[j][names(seqObj[j])]
+            seq2 = seqObj[[j]][names(seqObj[j])]
             distance[[paste(names(seqObj[i]), names(seqObj[j]), sep = '-')]] = Poisson_dist(seq1, seq2)
         }
     }
@@ -295,14 +249,6 @@ optimize <- function (seqObj) {
 
 
 
-#thetaCfunc <- function (optimize_dist) {
-#    valTheta = c()
-#    for (i in 1:length(names(optimize_dist))) {
-#        valTheta = c(valTheta, optimize_dist[names(optimize_dist[i])])
-#    }
-#
-#    return(mean(valTheta))
-#}
 
 
 thetaEK <- function (aliObj, optimize_dist) {
@@ -326,7 +272,7 @@ thetaEK <- function (aliObj, optimize_dist) {
 }
 
 
-thetaC <- function (thetaEKVals) {
+meanTheta <- function (thetaEKVals) {
     allTheta = c()
     for (i in 1:length(names(thetaEKVals))) {
         for (theta in thetaEKVals[names(thetaEKVals)[i]]) {
@@ -348,7 +294,7 @@ variability <- function (thetaEKVals, meanThetaEK) {
 }
 
 
-meanVariability <- function(variabilityData) {
+meanVar <- function(variabilityData) {
     allVar = c()
     for (i in 1:length(names(variabilityData))) {
         for (var in variabilityData[names(variabilityData)[i]]) {
@@ -357,6 +303,11 @@ meanVariability <- function(variabilityData) {
     }
     
     return(mean(allVar))
+}
+
+
+thetaParam <- function(meanVarDict) {
+    
 }
 
 
@@ -385,6 +336,7 @@ corAllSite <- function (corData) {
     
     return(c(mean(allCor), var(allCor)))
 }
+
 
 
 
