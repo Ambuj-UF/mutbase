@@ -218,8 +218,8 @@ Poisson <- function (distance, long) {
 
 Relative_distance <- function (distance, sorted_dist) {
     for (i in 1:length(names(distance))) {
-        if (sorted_dist[0] != 0) {
-            distance[names(distance[i])] = distance[names(distance[i])]/sorted_dist[0]
+        if (sorted_dist[1] != 0) {
+            distance[names(distance[i])] = distance[names(distance[i])]/sorted_dist[1]
         }
     }
     
@@ -232,18 +232,18 @@ optimize <- function (seqObj) {
     distance = list()
     seqNameVec = c()
     for (i in 1:length(names(seqObj))) {
-        seqNameVec = c(seqNameVec, names(seqObj[[i]]))
+        seqNameVec = c(seqNameVec, names(seqObj)[i])
         inSeqObj = seqObj[!names(seqObj[i]) %in% seqNameVec]
-        seq1 = seqObj[[i]][[names(seqObj[i])]]
+        seq1 = seqObj[[names(seqObj[i])]]
         for (j in 1:length(names(seqNameVec))) {
-            seq2 = seqObj[[j]][names(seqObj[j])]
+            seq2 = seqObj[names(seqObj[j])]
             distance[[paste(names(seqObj[i]), names(seqObj[j]), sep = '-')]] = Poisson_dist(seq1, seq2)
         }
     }
     
     dist_val = c()
     for (i in 1:length(names(distance))) {
-        dist_val = c(dist_val, distance[names(distance[i])])
+        dist_val = c(dist_val, distance[[names(distance[i])]])
     }
     
     sorted_dist = sort(dist_val)
@@ -259,7 +259,7 @@ optimize <- function (seqObj) {
 thetaEK <- function (aliObj, optimize_dist) {
     bmat = Blossum()
     posList = list()
-    for (i in 1:length(aliObj[names(aliObj[1])])) {
+    for (i in 1:nchar(aliObj[names(aliObj[1])])) {
         storeName = c()
         data = c()
         for (m in 1:length(names(aliObj))) {
@@ -270,7 +270,7 @@ thetaEK <- function (aliObj, optimize_dist) {
                     as.character)]/optimize_dist[[paste(names(aliObj[m], names(inAliObj[n]), sep='-'))]])
             }
         }
-        posList[[paste(pos, i, sep = '')]] = data
+        posList[paste(pos, i, sep = '')] = data
     }
     
     return(posList)
@@ -473,6 +473,15 @@ read_fasta_alignment <- function(filename){
 }
 
 
+
+storeRecord <- function(names, alignment) {
+    recordObj = list()
+    for (i in 1:length(names)) {
+        recordObj[names[i]] = alignment[i]
+    }
+    
+    return(recordObj)
+}
 
 
 
