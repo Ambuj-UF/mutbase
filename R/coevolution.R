@@ -24,7 +24,58 @@
 library(Biostrings)
 
 
+is.defined <- function(x) !is.null(x)
 
+trim_seq <- function(stObj, initPos=NULL, endPos=NULL) {
+    newSeqList = strsplit(stObj, "")[[1]]
+    if (is.defined(initPos) == TRUE) {
+        removePosInit = c(1:initPos)
+    }
+    else { removePosInit = c() }
+    if (is.defined(endPos) == TRUE) {
+        removePosEnd = c(endPos:length(newSeqList))
+    }
+    else { removePosEnd = c() }
+    
+    removers = c(removePosInit, removePosEnd)
+    
+    newSeqList = newSeqList[-removers]
+    newSeq = paste(newSeqList, collapse="")
+    
+    return(newSeq)
+    
+}
+
+
+rangeF <- function(pos1, stLength, split_num) {
+    retObj = c()
+    for (i in 1:stLength) {
+        if (i%%split_num == 1) {
+            retObj = c(retObj, i)
+        }
+    }
+    
+    return(retObj)
+}
+
+
+spliter <- function(stObj, num) {
+    retObj = c()
+    for (start in rangeF(1, nchar(stObj), num)) {
+        if (start == 1) {
+            retObj = c(retObj, trim_seq(stObj, endPos=start+num))
+        }
+        else if (start == nchar(stObj) - 2) {
+            retObj = c(retObj, trim_seq(stObj, initPos=start-1))
+        }
+        else {
+            retObj = c(retObj, trim_seq(stObj, start-1, start+num))
+        }
+        
+    }
+    
+    return(retObj)
+}
 
 
 
@@ -124,6 +175,55 @@ z_table <- list(
     '29' =	c(0.9981,	0.9982,	0.9982,	0.9983,	0.9984,	0.9984,	0.9985,	0.9985,	0.9986,	0.9986),
     '30' = c(0.9987,	0.9987,	0.9987,	0.9988,	0.9988,	0.9989,	0.9989,	0.9989,	0.999,	0.999)
 )
+
+
+
+
+li_synonymous <- (recordObj) {
+
+    syn_distance = 0
+    inRecStore = c()
+    L = c(); Ts = c(); Tv = c(); A = c(); B = c()
+    counter = 0
+    while (counter <= ) {
+        L = c(L, 0)
+        Ts = c(Ts, 0)
+        Tv = c(Tv, 0)
+        A = c(A, 0)
+        B = c(B, 0)
+        counter = counter + 1
+    }
+
+    for (rec in recordObj) {
+        inRec = c()
+        inRecStore = c(inRecStore, rec[[id]])
+        for (x in recordObj) {
+            if (!(x[[id]] %in% inRecStore)) {
+                inRec = c(inRec, x)
+            }
+        }
+        
+        for (inrec in inRec) {
+            codonSeq1 = spliter(rec[[seq]], 3)
+            codonSeq2 = spliter(inrec[[seq]], 3)
+            for (i in length(codonSeq1)) {
+                L_Ts_Tv = deg_transvers(codonSeq1[[i]], codonSeq2[[i]], L, Ts, Tv)
+            }
+            
+            A_B = calculate_A_B(Ts, Tv, L, A, B)
+            
+            if (L[[2]] + L[[3]] > 0) {
+                syn_distance = syn_distance + (((L[[2]]*A[[2]]) + (L[[3]]*A[[3]]))/(L[[2]] + L[[3]])) + B[[3]]
+            }
+            else {
+                syn_distance = syn_distance + B[[2]]
+            }
+        }
+    }
+    
+    return(syn_distance)
+    
+}
 
 
 
