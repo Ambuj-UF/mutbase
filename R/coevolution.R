@@ -341,15 +341,15 @@ varTonewVar <- function(varDist, posCorExec) {
 }
 
 
-correlation(variability, mvar) {
+correlation <- function(variability, mvar) {
     corData = list()
     storeName = c()
-    for (i in length(names(variability))) {
+    for (i in length(variability)) {
         storeName = c(storeName, names(variability[i]))
         inVariability = variability[!names(variability) %in% storeName]
-        for (j in length(names(inVariability))) {
+        for (j in length(inVariability)) {
             corData[[paste(names(variability)[i], names(inVariability)[j]), sep='-']] =
-                cor(variability[names(variability)[i]], inVariability[names(inVariability)[j]])
+                cor.test(variability[names(variability)[i]], inVariability[names(inVariability)[j]])
         }
     }
     
@@ -357,15 +357,18 @@ correlation(variability, mvar) {
 }
 
 
-
-corAllSite <- function (corData) {
-    allCor = c()
-    for (i in 1:length(names(corData))) {
-        allCor = c(allCor, corData[names(corData)[i]])
+modulate <- function(value) {
+    if (value > 1) {
+        return(value)
     }
-    
-    return(c(mean(allCor), var(allCor)))
+    else {
+        return(-value)
+    }
 }
+
+
+
+
 
 
 
