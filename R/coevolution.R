@@ -324,7 +324,20 @@ thetaParam <- function(meanVarDict) {
         }
     }
     
-    return posCorExec
+    return(posCorExec)
+}
+
+
+
+varTonewVar <- function(varDist, posCorExec) {
+    newVarDist = list()
+    for (i in length(varDist)) {
+        if (names(varDist[[i]]) %in% posCorExec) {
+            newVarDist[key] = val
+        }
+    }
+
+    return(newVarDist)
 }
 
 
