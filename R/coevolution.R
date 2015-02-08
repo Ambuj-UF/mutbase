@@ -386,6 +386,92 @@ pick_significant <- function(corScore, cutoff) {
 
 
 
+replace_element <- function(stringElement, Obj1, Obj2) {
+    new_vec = strsplit(stringElement, "")
+    for (i in 1:length(new_vec[[1]])) {
+        if (new_vec[[1]][[i]] == Obj1) {
+            new_vec[[1]][i] = Obj2
+        }
+    }
+    
+    retString = paste(new_vec[[1]], collapse = "")
+    
+    return(retString)
+}
+
+
+rem_last <- function(stObj) {
+    x = strsplit(stObj, "")[[1]]
+    x = x[-length(x)]
+    strRet = paste(x, collapse="")
+    return(strRet)
+}
+
+
+search_element <- function(stObj, search_obj) {
+    if ( search_obj %in% strsplit(stObj, "")[[1]] ) {return(TRUE)}
+    else {return(FALSE)}
+}
+
+
+read_fasta_alignment <- function(filename){
+    
+    f = readLines(filename,encoding="UTF-8")
+    
+    names = c()
+    alignment = c()
+    cur_seq = ''
+    
+    for (line in f){
+        line = rem_last(line)
+        if (nchar(line) == 0){ next }
+        if (line[[1]] == ';'){ next }
+        if (search_element(line[[1]], '>')) {
+            names = c(names, trim_seq(line[[1]], initPos=1)[[1]])
+            
+            if (cur_seq != '') {
+                cur_seq = toupper(cur_seq)
+                aminos = strsplit(cur_seq, "")[[1]]
+                for (i in 1:length(aminos)) {
+                    if (!(aminos[[i]] %in% iupac_alphabet)) {
+                        aminos[i] = "-"
+                    }
+                }
+                
+                cur_seq = paste(aminos, collapse="")
+                
+                cur_seq = replace_element(cur_seq,'B','D')
+                cur_seq = replace_element(cur_seq,'Z','Q')
+                cur_seq = replace_element(cur_seq,'X','-')
+                alignment = c(alignment, cur_seq)
+                cur_seq = ''
+            }
+        }
+        
+        else if (strsplit(line, "")[[1]][1] %in% iupac_alphabet){
+            cur_seq = paste(cur_seq, line[[1]], sep="")
+        }
+        
+    }
+    
+    cur_seq = toupper(cur_seq)
+    aminos = strsplit(cur_seq, "")[[1]]
+    for (i in 1:length(aminos)) {
+        if (!(aminos[[i]] %in% iupac_alphabet)) {
+            aminos[i] = "-"
+        }
+    }
+    
+    cur_seq = paste(aminos, collapse="")
+    cur_seq = replace_element(cur_seq,'B','D')
+    cur_seq = replace_element(cur_seq,'Z','Q')
+    cur_seq = replace_element(cur_seq,'X','-')
+    
+    alignment = c(alignment, cur_seq)
+    return (list(names,alignment))
+    
+}
+
 
 
 
