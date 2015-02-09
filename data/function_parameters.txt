@@ -11,16 +11,42 @@ Coiled-coil structure	Ubiquitination sites
 
 
 
-We calculate the probability of loss or gain of a structural/functional property, i.e. mutant proteins can be predicted to either introduce or eliminate structural or functional properties. More specifically, given a protein sequence s, the probability of the loss of a particular property p at residue s_i can be expressed as:
+We calculate the probability of loss or gain of a structural/functional property, i.e.
+ mutant proteins can be predicted to either introduce or eliminate structural or 
+functional properties. More specifically, given a protein sequence s, the probability 
+of the loss of a particular property p at residue s_i can be expressed as:
 
 P(loss of property at s_i) = P(p|s_i^w)*(1-P(p|s_i^m))
 
-where P(p|s_i^w) is the probability of the presence of property p at residue s_i in the wild-type protein and (1−P(p|s_i^m)) is the probability of absence of p at residue s_i in the mutant. The two events, corresponding to two physically separate molecules, are considered independent. Similarly, the gain of structural or functional property p can be expressed as:
+where P(p|s_i^w) is the probability of the presence of property p at residue s_i in the
+ wild-type protein and (1−P(p|s_i^m)) is the probability of absence of p at residue s_i 
+in the mutant. The two events, corresponding to two physically separate molecules, are 
+considered independent. Similarly, the gain of structural or functional property p can 
+be expressed as:
 
 P(gain of property at s_i) = (1-P(p|s_i^w))* P(p|s_i^m)
 
 
-A reduction of score from 1.0 to 0.9 corresponds to the probability of loss of 0.1, whilst the reduction of score from 0.5 to 0.4 corresponds to the probability of the loss of property of 0.3.
+A reduction of score from 1.0 to 0.9 corresponds to the probability of loss of 0.1, 
+whilst the reduction of score from 0.5 to 0.4 corresponds to the probability of the 
+loss of property of 0.3.
 
 
-The gain and loss of a property at residue s_i does not necessarily suggest that the amino acid substitution occurred at position i. This situation is particularly interesting for single-residue functional sites such as post-translational modifications, because impacts of substitutions of neighboring residues cannot be easily detected even if the functional site is known. We refer to such cases as functional neighborhood mutations, whereas the direct changes of functional sites are referred to as functional site mutations. In general, we expect that the probability of gain or loss of function at s_i will be inversely correlated with the distance of the substitution site from s_i (here we consider residues between positions −5 and +5 from the substitution site). Thus, the largest impact on protein function is likely to be for the functional site mutations. In the case of a loss of property, this results in P(p|s_i^m)=0 and therefore the probability that the wild-type sequence is functional at s_i equals the probability that the function will be lost. An example of such a situation is when a phosphorylatable serine residue is substituted by a non-phosphorylatable residue such as alanine. Similarly, in the case of a gain of function, the probability that s_i is non-functional in the wild-type equals 1, i.e. P(p|s_i^w)=0. Hence, for functional site mutations, the prediction of protein property in the mutated and wild-type protein also predicts the gain or loss of that property, respectively. 
+The gain and loss of a property at residue s_i does not necessarily suggest that the amino
+ acid substitution occurred at position i. This situation is particularly interesting for
+ single-residue functional sites such as post-translational modifications, because impacts
+ of substitutions of neighboring residues cannot be easily detected even if the functional
+ site is known. We refer to such cases as functional neighborhood mutations, whereas the
+ direct changes of functional sites are referred to as functional site mutations. In
+ general, we expect that the probability of gain or loss of function at s_i will be 
+inversely correlated with the distance of the substitution site from s_i (here we consider
+ residues between positions −5 and +5 from the substitution site). Thus, the largest 
+impact on protein function is likely to be for the functional site mutations. In the case
+ of a loss of property, this results in P(p|s_i^m)=0 and therefore the probability that
+ the wild-type sequence is functional at s_i equals the probability that the function will 
+be lost. An example of such a situation is when a phosphorylatable serine residue is 
+substituted by a non-phosphorylatable residue such as alanine. Similarly, in the case of a
+ gain of function, the probability that s_i is non-functional in the wild-type equals 1, 
+i.e. P(p|s_i^w)=0. Hence, for functional site mutations, the prediction of protein 
+property in the mutated and wild-type protein also predicts the gain or loss of that 
+property, respectively. 
