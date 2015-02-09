@@ -1,0 +1,9 @@
+Structural properties	Functional properties
+
+Secondary structure	DNA-binding residues
+Solvent accessibility	Catalytic residues
+Stability		MoRFs
+Intrinsic disorder	Phosphorylation sites
+B-factor		Methylation sites
+Transmembrane helix	Glycosylation sites
+Coiled-coil structure	Ubiquitination sites
